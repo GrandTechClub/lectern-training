@@ -561,37 +561,39 @@
     // ── SHUTDOWN ─────────────────────────────────────────────────────────────
     if (a.device === 'shutdown') {
       steps.push({
-        title: 'Mute all audio channels',
-        body: `${highlight('images/audio-console.png', 'Audio console', [
-            {x: 87, y: 21, w: 8, h: 16, color: '#f39c12'},
-            {x: 77, y:  8, w: 8, h: 12, color: '#e94560'}
+        title: 'Turn off the TVs — tap "All TVs" on the console',
+        body: `${highlight('images/console-home.png', 'Console home screen', [
+            {x: 17, y: 40, w: 16, h: 16, color: '#e94560'}
           ])}
-          On the <strong>audio console</strong>, press the button at the top of each active channel so it turns <strong>red/pink</strong> (muted).<br><br>
-          Check each of the following:<br>
-          <strong>1st (leftmost)</strong> — Audio<br>
-          <strong>2nd</strong> — Lectern Mic<br>
-          <strong>3rd</strong> — Wireless1<br>
-          <strong>4th</strong> — Wireless2<br><br>
-          Also make sure the <strong>Class Rm button</strong> on the right is muted (red/pink).`
+          On the <strong>touch panel console</strong>, tap <strong>All TVs</strong> (highlighted above).<br><br>
+          If the console screen is dark, tap anywhere on it first to wake it up.`
       });
       steps.push({
-        title: 'Turn off the microphones',
-        body: `If you used any microphones, make sure they are powered off:<br><br>
-          <strong>Lectern Mic</strong> — press the power button on the mic until the green light turns off.<br><br>
+        title: 'Tap "OFF" to turn off all three TVs',
+        body: `${highlight('images/console-menu.png', 'Console All TVs menu', [
+            {x: 17, y: 71, w: 26, h: 11, color: '#e94560'}
+          ])}
+          A menu will appear. Tap <strong>OFF</strong> (highlighted above).<br><br>
+          This will turn off all three TVs (Main, Left, and Right).<br><br>
+          <strong>Note:</strong> This also automatically mutes all audio. The audio console stays powered on but will be muted — that is normal and expected.`
+      });
+      steps.push({
+        title: 'Turn off any microphones you used',
+        body: `If you used any microphones, power them off now:<br><br>
+          <strong>Lectern Mic</strong> — press the power button on the base of the mic until the green light turns off.<br><br>
           <strong>Wireless handheld or clip-on mic</strong> — press and hold the power button until the light turns off.`
       });
       steps.push({
-        title: 'Turn off the TVs via the console',
-        body: `${highlight('images/console-home.png', 'Console home screen', [
-            {x: 8, y: 26, w: 9, h: 13, color: '#f39c12'}
-          ])}
-          On the <strong>touch panel console</strong>, tap the <strong>home button</strong> (house icon on the left side) to return to the home screen.<br><br>
-          From the home screen, tap <strong>All TVs</strong>, then select <strong>OFF</strong> to turn off all displays.`
-      });
-      steps.push({
-        title: 'You\'re all done!',
-        body: `The system is now shut down. Thank you for using the Grand Tech Club A/V system.<br><br>
-          If anything seemed off or you noticed a problem, please let a Tech Club officer know.`
+        title: "You're all done!",
+        body: `The TVs are off and the system is shut down.<br><br>
+          <strong>Please leave the following alone — do not power them off:</strong><br>
+          <ul style="margin:8px 0 0 18px; padding:0;">
+            <li>The <strong>Lectern PC and Mac</strong> — these stay on.</li>
+            <li>The <strong>Monitor</strong> — it will go to sleep on its own after a couple of hours.</li>
+            <li>The <strong>touch panel console</strong> — it will also go to sleep on its own after a period of inactivity.</li>
+            <li>The <strong>audio console</strong> — leave it powered on and muted.</li>
+          </ul><br>
+          Thank you for using the Grand Tech Club A/V system!`
       });
       return steps;
     }

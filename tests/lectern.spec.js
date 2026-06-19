@@ -45,10 +45,10 @@ for (const device of DEVICES_LIST) {
         await expect(page.locator('#q-device')).toBeVisible();
 
         await page.click(`[data-q="device"][data-v="${device}"]`);
-        await expect(page.locator('[data-q="audio"]').first()).toBeVisible();
+        await expect(page.locator('[data-q="audio"]').filter({ visible: true }).first()).toBeVisible();
 
         await page.click(`[data-q="audio"][data-v="${audio}"]`);
-        await expect(page.locator('[data-q="mic"]').first()).toBeVisible();
+        await expect(page.locator('[data-q="mic"]').filter({ visible: true }).first()).toBeVisible();
 
         await page.click(`[data-q="mic"][data-v="${mic}"]`);
         await expect(page.locator('#show-steps-btn')).toBeEnabled();
