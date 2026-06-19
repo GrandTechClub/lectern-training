@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -195,17 +195,18 @@
     .nav-btn.done:hover { background: #27ae60; border-color: #27ae60; }
 
     .restart-btn {
-      background: transparent;
-      border: 2px solid #c0d4e8;
+      background: #eaf2fb;
+      border: 2px solid #4a90d9;
       border-radius: 8px;
-      color: #5a7a9a;
+      color: #1a3a6b;
       cursor: pointer;
-      font-size: 0.85rem;
-      padding: 8px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 12px 16px;
       transition: all 0.15s;
       width: 100%;
     }
-    .restart-btn:hover { border-color: #4a90d9; color: #1a3a6b; }
+    .restart-btn:hover { background: #d0e8f8; border-color: #1a3a6b; }
 
     .complete-banner {
       background: #d4f0c8;
@@ -232,10 +233,19 @@
       <img src="images/GTC-logo.png" alt="Grand Tech Club">
     </div>
     <h1>Tech Club A/V Setup Guide</h1>
-    <p class="subtitle">Answer a few questions and we'll walk you through the exact steps you need.</p>
+    <p class="subtitle">Use this guide every time you use the lectern. Select what you'd like to do today.</p>
 
-    <div class="question" id="q-device">
-      <h2>1. What will you be using today?</h2>
+    <div class="question" id="q-mode">
+      <h2>What would you like to do today?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="mode" data-v="overview">I'm new here — show me how everything works</button>
+        <button class="option-btn" data-q="mode" data-v="setup">I'm ready to present — walk me through the setup</button>
+        <button class="option-btn" data-q="mode" data-v="shutdown">I'm done presenting — help me shut everything down</button>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-device">
+      <h2>2. What will you be using today?</h2>
       <p style="color:#5a7a9a; font-size:0.85rem; margin:-8px 0 12px;">At this time you may select only one device. It will appear on all three TVs and the lectern monitor.</p>
       <div class="options">
         <button class="option-btn" data-q="device" data-v="lectern-pc">Lectern PC</button>
@@ -249,7 +259,7 @@
 
     <!-- Q2a: Lectern PC / Mac audio -->
     <div class="question hidden" id="q-audio-lectern">
-      <h2>2. Will you be playing something with sound on the lectern? (e.g. a YouTube video, music, or any audio from the lectern computer)</h2>
+      <h2>3. Will you be playing something with sound on the lectern? (e.g. a YouTube video, music, or any audio from the lectern computer)</h2>
       <div class="options">
         <button class="option-btn" data-q="audio" data-v="yes">Yes — I need the room speakers to play sound from the lectern computer</button>
         <button class="option-btn" data-q="audio" data-v="no">No — I don't need any sound from the lectern computer</button>
@@ -258,7 +268,7 @@
 
     <!-- Q3a: Lectern PC / Mac mic -->
     <div class="question hidden" id="q-mic-lectern">
-      <h2>3. Will you be using the microphone(s)?</h2>
+      <h2>4. Will you be using the microphone(s)?</h2>
       <div class="options">
         <button class="option-btn" data-q="mic" data-v="lectern-mic">Lectern microphone</button>
         <button class="option-btn" data-q="mic" data-v="wireless">Wireless hand-held microphone</button>
@@ -278,7 +288,7 @@
 
     <!-- Q: Personal device mic -->
     <div class="question hidden" id="q-mic">
-      <h2>3. Which microphone do you need?</h2>
+      <h2>4. Which microphone do you need?</h2>
       <div class="options">
         <button class="option-btn" data-q="mic" data-v="none">No microphone today</button>
         <button class="option-btn" data-q="mic" data-v="handfree">Hands-free clip-on microphone</button>
@@ -298,9 +308,7 @@
       <div class="step-counter" id="step-counter"></div>
     </div>
 
-    <div id="complete-banner" class="complete-banner hidden">
-      ✅ All done! Your A/V setup is complete.
-    </div>
+    <div id="complete-banner" class="complete-banner hidden"></div>
 
     <div class="step-card" id="step-card">
       <div class="step-num-badge" id="step-badge"></div>
@@ -334,9 +342,22 @@
       answers[q] = v;
 
       const isLectern = answers.device === 'lectern-pc' || answers.device === 'lectern-mac';
-      const isWindows = answers.device === 'windows';
 
-      if (q === 'device') {
+      if (q === 'mode') {
+        // Reset everything below
+        ['q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
+          document.getElementById(id).classList.add('hidden'));
+        delete answers.device; delete answers.audio; delete answers.mic;
+        document.getElementById('show-steps-btn').disabled = true;
+
+        if (v === 'setup') {
+          document.getElementById('q-device').classList.remove('hidden');
+        } else {
+          // overview or shutdown — no further questions needed
+          answers.device = v;
+          document.getElementById('show-steps-btn').disabled = false;
+        }
+      } else if (q === 'device') {
         ['q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
           document.getElementById(id).classList.add('hidden'));
         delete answers.audio; delete answers.mic;
@@ -348,7 +369,7 @@
           const names = { mac:'Mac laptop', iphone:'iPhone / iPad', android:'Android phone' };
           const name = names[v] || 'device';
           document.getElementById('q-audio-label').textContent =
-            `2. Will you be playing something with sound from your ${name}? (e.g. a YouTube video, music, or any audio from your ${name})`;
+            `3. Will you be playing something with sound from your ${name}? (e.g. a YouTube video, music, or any audio from your ${name})`;
           document.getElementById('q-audio').classList.remove('hidden');
         }
       } else if (q === 'audio') {
@@ -379,7 +400,15 @@
       renderStep();
     } else {
       // Final step reached — show completion
-      document.getElementById('complete-banner').classList.remove('hidden');
+      const banner = document.getElementById('complete-banner');
+      if (answers.device === 'overview') {
+        banner.textContent = '✅ Great job! You now have a good understanding of the lectern A/V system. Click "Start Over / Change Answers" below when you are ready to set up for your presentation.';
+      } else if (answers.device === 'shutdown') {
+        banner.textContent = '✅ All done! The lectern and TVs have been shut down. Thank you!';
+      } else {
+        banner.textContent = '✅ All done! Your A/V setup is complete. You are ready to use the lectern.';
+      }
+      banner.classList.remove('hidden');
       document.getElementById('step-card').classList.add('hidden');
       document.getElementById('next-btn').classList.add('hidden');
       document.getElementById('prev-btn').classList.add('hidden');
@@ -395,7 +424,7 @@
   document.getElementById('restart-btn').addEventListener('click', () => {
     Object.keys(answers).forEach(k => delete answers[k]);
     document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-    ['q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
+    ['q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
       document.getElementById(id).classList.add('hidden'));
     document.getElementById('show-steps-btn').disabled = true;
     document.getElementById('complete-banner').classList.add('hidden');
@@ -433,11 +462,13 @@
 
   // ── SCENARIO DESCRIPTION ──────────────────────────────────────────────────
   function describeScenario(a) {
+    if (a.device === 'overview') return 'System Overview';
+    if (a.device === 'shutdown') return 'Shutting down';
     const device = { 'lectern-pc':'Lectern PC', 'lectern-mac':'Lectern Mac', mac:'Mac laptop',
       windows:'Windows laptop', iphone:'iPhone/iPad', android:'Android' }[a.device] || a.device;
     const audio = a.audio === 'yes' ? 'with audio' : 'no audio';
     const mic = { none:'no mic', 'lectern-mic':'lectern mic', handfree:'clip-on mic',
-      wireless:'wireless mic', both:'lectern mic' }[a.mic] || a.mic;
+      wireless:'wireless mic' }[a.mic] || a.mic;
     return `${device} · ${audio} · ${mic}`;
   }
 
@@ -464,23 +495,130 @@
     const isLectern = a.device === 'lectern-pc' || a.device === 'lectern-mac';
     const isWindows = a.device === 'windows';
 
+    // ── OVERVIEW ─────────────────────────────────────────────────────────────
+    if (a.device === 'overview') {
+      steps.push({
+        title: 'The Big Picture',
+        body: `Just like our old system, the A/V setup has <strong>inputs</strong> (what you want to show or say) and <strong>outputs</strong> (where it appears or plays). Two controllers connect them together.<br><br>
+          This overview will walk you through each piece so you know what everything does before you get started.`
+      });
+      steps.push({
+        title: 'The Outputs — Screens and Speakers',
+        body: `<em>Photo of room coming soon.</em><br><br>
+          The room has four display outputs:<br><br>
+          <strong>Lectern Monitor</strong> — the screen at the lectern, used by the Lectern PC and Mac.<br>
+          <strong>Main TV</strong> — the large TV at the front of the room. This replaced the old projector.<br>
+          <strong>Left TV</strong> — TV on the left side of the room.<br>
+          <strong>Right TV</strong> — TV on the right side of the room.<br><br>
+          There is also one audio output: the <strong>Room Speakers</strong>, which play sound from your device or microphone.`
+      });
+      steps.push({
+        title: 'The Video Inputs — What You Can Cast',
+        body: `A video input is the device you want to display on the TVs. You can use any of the following:<br><br>
+          <strong>Lectern PC</strong> — the Windows PC built into the lectern.<br>
+          <strong>Lectern Mac</strong> — the Mac Mini built into the lectern.<br>
+          <strong>Your own laptop</strong> — Windows or Mac.<br>
+          <strong>Your mobile device</strong> — iPhone, iPad, or Android.`
+      });
+      steps.push({
+        title: 'The Audio Inputs — Microphones',
+        body: `An audio input is a microphone that feeds sound into the room speakers. There are three options:<br><br>
+          <strong>Lectern Microphone</strong> — built into the lectern. Check that the light at the base is <strong>green</strong> before use.<br><br>
+          <strong>Wireless Handheld Microphone</strong> — a hand-held wireless mic you can pass around the room.<br><br>
+          <strong>Hands-Free Clip-On Microphone</strong> — a small mic you clip to your clothing, leaving your hands free.<br><br>
+          You can also play audio directly from your device (e.g. a YouTube video) through the room speakers.`
+      });
+      steps.push({
+        title: 'Controller 1 — The ClickShare Console',
+        body: `${highlight('images/console-home.png', 'ClickShare touch panel console', [])}
+
+          The <strong>ClickShare Console</strong> is the touch panel on the lectern. It controls which video input is shown on which screens.<br><br>
+          From this console you select the TVs you want to use, then choose your input source (Lectern PC, Mac, ClickShare, etc.).<br><br>
+          <strong>Important:</strong> Always use a <strong>gentle tap</strong> — not a long press — to avoid triggering unintended menus.`
+      });
+      steps.push({
+        title: 'Controller 2 — The Audio Console',
+        body: `${highlight('images/audio-console.png', 'Audio console', [])}
+          The <strong>Audio Console</strong> controls which audio inputs play through the room speakers. It is always powered on.<br><br>
+          Each channel has a button at the top — <strong>white</strong> means active, <strong>red/pink</strong> means muted.<br><br>
+          The channels from left to right are:<br>
+          <strong>1st</strong> — Device Audio &nbsp;<strong>2nd</strong> — Lectern Mic &nbsp;<strong>3rd</strong> — Wireless Handheld &nbsp;<strong>4th</strong> — Hands-Free Clip-On<br><br>
+          The <strong>Class Rm button</strong> on the right must also be white for any audio to be heard.<br><br>
+          <strong>Important:</strong> Always use a <strong>gentle tap</strong> here too — not a long press.`
+      });
+      steps.push({
+        title: 'Getting Started Recommendation',
+        body: `For your first couple of sessions, we recommend keeping it simple:<br><br>
+          1. Use the <strong>Lectern PC</strong> or <strong>Lectern Mac</strong> as your video input.<br>
+          2. Cast to <strong>all three TVs</strong> and the lectern monitor.<br>
+          3. Try out one of the <strong>microphones</strong> so you are comfortable with the audio setup.<br><br>
+          Once you are comfortable with that setup, try connecting your own laptop or mobile device.<br><br>
+          When you are ready, click the <strong>"← Start Over / Change Answers"</strong> button below to go back and select <strong>"I am ready to present"</strong> for your personalized step-by-step guide.`
+      });
+      return steps;
+    }
+
+    // ── SHUTDOWN ─────────────────────────────────────────────────────────────
+    if (a.device === 'shutdown') {
+      steps.push({
+        title: 'Mute all audio channels',
+        body: `${highlight('images/audio-console.png', 'Audio console', [
+            {x: 87, y: 21, w: 8, h: 16, color: '#f39c12'},
+            {x: 77, y:  8, w: 8, h: 12, color: '#e94560'}
+          ])}
+          On the <strong>audio console</strong>, press the button at the top of each active channel so it turns <strong>red/pink</strong> (muted).<br><br>
+          Check each of the following:<br>
+          <strong>1st (leftmost)</strong> — Audio<br>
+          <strong>2nd</strong> — Lectern Mic<br>
+          <strong>3rd</strong> — Wireless1<br>
+          <strong>4th</strong> — Wireless2<br><br>
+          Also make sure the <strong>Class Rm button</strong> on the right is muted (red/pink).`
+      });
+      steps.push({
+        title: 'Turn off the microphones',
+        body: `If you used any microphones, make sure they are powered off:<br><br>
+          <strong>Lectern Mic</strong> — press the power button on the mic until the green light turns off.<br><br>
+          <strong>Wireless handheld or clip-on mic</strong> — press and hold the power button until the light turns off.`
+      });
+      steps.push({
+        title: 'Turn off the TVs via the console',
+        body: `${highlight('images/console-home.png', 'Console home screen', [
+            {x: 8, y: 26, w: 9, h: 13, color: '#f39c12'}
+          ])}
+          On the <strong>touch panel console</strong>, tap the <strong>home button</strong> (house icon on the left side) to return to the home screen.<br><br>
+          From the home screen, tap <strong>All TVs</strong>, then select <strong>OFF</strong> to turn off all displays.`
+      });
+      steps.push({
+        title: 'You\'re all done!',
+        body: `The system is now shut down. Thank you for using the Grand Tech Club A/V system.<br><br>
+          If anything seemed off or you noticed a problem, please let a Tech Club officer know.`
+      });
+      return steps;
+    }
+
     // ── STEP 1: Wake up the console ───────────────────────────────────────
     steps.push({
       title: 'Wake up the touch panel console',
-      body: `Tap anywhere on the <strong>touch panel console</strong> on the lectern to wake it up. You should see the Home Screen shown below.<br><br>
-        <strong>Tip:</strong> The <strong>home button</strong> (house icon, highlighted in orange below) on the left side is always lit up. If you ever get lost, tap it to return to this screen.
-        ${highlight('images/console-home.png', 'Console home screen', [
+      body: `${highlight('images/console-sleep.png', 'Touch panel console sleep screen', [])}
+        This is what the touch panel console looks like when it is asleep. <strong>Tap anywhere on the screen</strong> to wake it up.`
+    });
+
+    steps.push({
+      title: 'You should see the Home Screen',
+      body: `${highlight('images/console-home.png', 'Console home screen', [
           {x: 8, y: 26, w: 9, h: 13, color: '#f39c12'}
-        ])}`
+        ])}
+        After tapping, the Home Screen shown above will appear.<br><br>
+        <strong>Tip:</strong> The <strong>home button</strong> (house icon, highlighted in orange) on the left side is always lit up. If you ever get lost, tap it to return to this screen.`
     });
 
     // ── STEP 2: Tap All TVs ───────────────────────────────────────────────
     steps.push({
-      title: "Tap 'All TV’s' to control all three screens",
-      body: `On the home screen, tap the <strong>All TV's</strong> button (highlighted below) to control all three TVs at once.
-        ${highlight('images/console-home.png', 'Console home screen with All TVs highlighted', [
+      title: "Tap 'All TV's' to control all three screens",
+      body: `${highlight('images/console-home.png', 'Console home screen with All TVs highlighted', [
           {x: 13, y: 28, w: 23, h: 34, color: '#e94560'}
-        ])}`
+        ])}
+        On the home screen, tap the <strong>All TV's</strong> button (highlighted above) to control all three TVs at once.`
     });
 
     // ── STEP 3: Select input source ───────────────────────────────────────
@@ -489,10 +627,10 @@
       const yPos  = a.device === 'lectern-mac' ? 36 : 22;
       steps.push({
         title: `Select '${source}' as the input source`,
-        body: `A menu will appear. Tap <strong>${source}</strong> (highlighted below) to display the Lectern ${a.device === 'lectern-mac' ? 'Mac' : 'PC'} on all TVs.
-          ${highlight('images/console-menu.png', 'Input source menu', [
+        body: `${highlight('images/console-menu.png', 'Input source menu', [
             {x: 7, y: yPos, w: 86, h: 13, color: '#e94560'}
-          ])}`
+          ])}
+          A menu will appear. Tap <strong>${source}</strong> (highlighted above) to display the Lectern ${a.device === 'lectern-mac' ? 'Mac' : 'PC'} on all TVs.`
       });
     }
 
@@ -525,18 +663,18 @@
 
       // ── WINDOWS: Switch TVs to Clickshare ────────────────────────────────
       steps.push({
-        title: "Tap 'All TV’s' on the console to switch the TV input",
-        body: `Go back to the touch panel console and tap <strong>All TV's</strong> (highlighted below).
-          ${highlight('images/console-home.png', 'Console home screen with All TVs highlighted', [
+        title: "Tap 'All TV's' on the console to switch the TV input",
+        body: `${highlight('images/console-home.png', 'Console home screen with All TVs highlighted', [
             {x: 13, y: 28, w: 23, h: 34, color: '#e94560'}
-          ])}`
+          ])}
+          Go back to the touch panel console and tap <strong>All TV's</strong> (highlighted above).`
       });
       steps.push({
         title: "Select 'On Clickshare' as the input source",
-        body: `Tap <strong>On Clickshare</strong> (highlighted below) to set all TVs to receive the Clickshare signal.
-          ${highlight('images/console-menu.png', 'Input source menu with On Clickshare highlighted', [
+        body: `${highlight('images/console-menu.png', 'Input source menu with On Clickshare highlighted', [
             {x: 7, y: 57, w: 86, h: 13, color: '#e94560'}
-          ])}`
+          ])}
+          Tap <strong>On Clickshare</strong> (highlighted above) to set all TVs to receive the Clickshare signal.`
       });
 
       // ── WINDOWS CASTING ─────────────────────────────────────────────────
@@ -585,28 +723,28 @@
     if (needsConsole) {
       steps.push({
         title: 'Check the audio console — unmute Master and Class Rm',
-        body: `Before anything will be heard in the room, confirm two things on the audio console:<br><br>
-          <strong>1. Master button</strong> (large round button, highlighted in orange below) must be <strong>white</strong>. If it is red/pink, press it to unmute.<br><br>
-          <strong>2. Class Rm button</strong> (pink button above the Class Rm label, highlighted in red below) must also be <strong>white</strong>. If it is red/pink, press it to unmute.<br><br>
-          Both must be white or no audio will come through.
-          ${highlight('images/audio-console.png', 'Audio console showing Master button and Class Rm button', [
+        body: `${highlight('images/audio-console.png', 'Audio console showing Master button and Class Rm button', [
             {x: 87, y: 21, w: 8,  h: 16, color: '#f39c12'},
             {x: 77, y:  8, w: 8,  h: 12, color: '#e94560'}
-          ])}`
+          ])}
+          Before anything will be heard in the room, confirm two things on the audio console:<br><br>
+          <strong>1. Master button</strong> (large round button, highlighted in orange above) will always be <strong>white</strong> — you do not need to press it.<br><br>
+          <strong>2. Class Rm button</strong> (pink button above the Class Rm label, highlighted in red above) must also be <strong>white</strong>. If it is red/pink, press it to unmute.<br><br>
+          Both must be white or no audio will come through.`
       });
 
       if (a.audio === 'yes') {
         steps.push({
-          title: 'Unmute the Audio channel (Channel 1)',
-          body: `Find the channel labeled <strong>Audio</strong> on the far left of the console.<br><br>
+          title: 'Unmute the Audio channel — leftmost button',
+          body: `Find the channel labeled <strong>Audio</strong> — it is the <strong>leftmost button</strong> on the console.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
-            This allows sound from your device to play through the room speakers.`
+            This allows sound from the selected device to play through the room speakers.`
         });
       }
       if (a.mic === 'lectern-mic') {
         steps.push({
-          title: 'Unmute the Lectern Microphone channel',
-          body: `On the audio console, find the channel labeled <strong>Lectern Mic</strong>.<br><br>
+          title: 'Unmute the Lectern Microphone — 2nd button from the left',
+          body: `On the audio console, find the channel labeled <strong>Lectern Mic</strong> — it is the <strong>2nd button from the left</strong>.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
             Then check the lectern microphone itself — look for the light at the bottom of the mic.
             It should be lit <strong>green</strong>. If it is not, press the <strong>On</strong> button on the microphone to turn it on.`
@@ -614,16 +752,16 @@
       }
       if (a.mic === 'wireless' || a.mic === 'both') {
         steps.push({
-          title: 'Unmute Wireless1 (Channel 3) — wireless handheld mic',
-          body: `Find the channel labeled <strong>Wireless1</strong>.<br><br>
+          title: 'Unmute Wireless1 — 3rd button from the left',
+          body: `Find the channel labeled <strong>Wireless1</strong> — it is the <strong>3rd button from the left</strong>.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
             This activates the wireless hand-held microphone.`
         });
       }
       if (a.mic === 'handfree' || a.mic === 'both') {
         steps.push({
-          title: 'Unmute Wireless2 (Channel 4) — hands-free clip-on mic',
-          body: `Find the channel labeled <strong>Wireless2</strong>.<br><br>
+          title: 'Unmute Wireless2 — 4th button from the left',
+          body: `Find the channel labeled <strong>Wireless2</strong> — it is the <strong>4th button from the left</strong>.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
             This activates the hands-free clip-on microphone.`
         });
