@@ -464,17 +464,8 @@
     const imgCache = {};
     for (const step of steps) {
       const src = extractFirstSrc(step.body);
-      console.log('[PDF] step:', step.title, '| src found:', src);
-      if (src && !imgCache[src]) {
-        const result = await loadImg(src);
-        console.log('[PDF] loadImg result for', src, ':', result ? 'OK ('+result.w+'x'+result.h+')' : 'FAILED');
-        imgCache[src] = result;
-      }
+      if (src && !imgCache[src]) imgCache[src] = await loadImg(src);
     }
-    const loaded    = Object.values(imgCache).filter(Boolean).length;
-    const attempted = Object.keys(imgCache).length;
-    console.log('[PDF] Images loaded:', loaded, '/', attempted);
-    btn.textContent = `⏳ Building PDF… (${loaded}/${attempted} images loaded)`;
 
     // ── Strip HTML → plain text ──
     function toText(html) {
