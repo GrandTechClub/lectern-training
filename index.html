@@ -1153,11 +1153,13 @@
       });
 
       if (a.audio === 'yes') {
+        const appleVolumeNote = (a.device === 'iphone' || a.device === 'mac') ? `<br><br>
+            <strong>⚠️ Important for Apple devices:</strong> Make sure your ${a.device === 'mac' ? 'Macbook' : 'iPhone or iPad'} is <strong>not muted</strong> — if it is muted, no sound will come through the room speakers. Keep the device volume low to avoid double sound.` : '';
         steps.push({
           title: 'Unmute the Audio channel — leftmost button',
           body: `Find the channel labeled <strong>Audio</strong> — it is the <strong>leftmost button</strong> on the console.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
-            This allows sound from the selected device to play through the room speakers.`
+            This allows sound from the selected device to play through the room speakers.${appleVolumeNote}`
         });
       }
       if (a.mic === 'lectern-mic') {
@@ -1182,7 +1184,7 @@
           title: 'Turn on the Handheld Microphone',
           body: `${highlight('images/mic-wireless1-power.png', 'Wireless handheld mic power button', [], 50)}
             Locate the handheld mic (found in the pouch labeled <strong>Wireless 1</strong>).<br><br>
-            Press and hold the <strong>power button</strong> (shown highlighted above) until the display lights up. The mic is now on and ready to use.`
+            <strong>Slide the power button</strong> (shown highlighted above) until the display lights up. The mic is now on and ready to use.`
         });
       }
       if (a.mic === 'handfree' || a.mic === 'both') {
