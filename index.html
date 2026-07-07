@@ -410,8 +410,13 @@
     renderStep();
   });
 
-  // ── PDF EXPORT (jsPDF, text only) ───────────────────────────────────────
-  document.getElementById('pdf-btn').addEventListener('click', () => {
+  // ── PDF EXPORT ───────────────────────────────────────────────────────────
+  document.getElementById('pdf-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('pdf-btn');
+    btn.textContent = '⏳ Building PDF…';
+    btn.disabled = true;
+    try {
+
     const { jsPDF } = window.jspdf;
     const doc      = new jsPDF({ unit: 'pt', format: 'letter' });
     const steps    = buildSteps(answers);
@@ -427,6 +432,40 @@
     const BOTTOM     = 740;
     const BODY_LH    = 13;                    // body line height
     const TITLE_LH   = 15;                    // title line height
+
+    // ── Load image via fetch → data URL (works on HTTPS/GitHub Pages) ──
+    async function loadImg(src) {
+      try {
+        const resp = await fetch(src);
+        if (!resp.ok) return null;
+        const blob = await resp.blob();
+        const dataUrl = await new Promise((res, rej) => {
+          const fr = new FileReader();
+          fr.onload = () => res(fr.result);
+          fr.onerror = rej;
+          fr.readAsDataURL(blob);
+        });
+        const dims = await new Promise((res, rej) => {
+          const img = new Image();
+          img.onload = () => res({ w: img.naturalWidth, h: img.naturalHeight });
+          img.onerror = rej;
+          img.src = dataUrl;
+        });
+        return { dataUrl, ...dims };
+      } catch { return null; }
+    }
+
+    function extractFirstSrc(html) {
+      const m = (html || '').match(/src="(images\/[^"]+\.(?:png|jpe?g|gif|webp))"/i);
+      return m ? m[1] : null;
+    }
+
+    // Pre-load one image per step
+    const imgCache = {};
+    for (const step of steps) {
+      const src = extractFirstSrc(step.body);
+      if (src && !imgCache[src]) imgCache[src] = await loadImg(src);
+    }
 
     // ── Strip HTML → plain text ──
     function toText(html) {
@@ -535,6 +574,20 @@
         y += 4;
       }
 
+      // ── Image ──
+      const src = extractFirstSrc(step.body);
+      const img = src ? imgCache[src] : null;
+      if (img) {
+        const maxW = CW * 0.65;
+        const maxH = 180;
+        const scale = Math.min(maxW / img.w, maxH / img.h, 1);
+        const iw = img.w * scale;
+        const ih = img.h * scale;
+        y = need(y, ih + 10);
+        doc.addImage(img.dataUrl, 'JPEG', MARGIN + 14, y, iw, ih);
+        y += ih + 8;
+      }
+
       // Divider
       y += 5;
       doc.setDrawColor(210, 226, 242); doc.setLineWidth(0.4);
@@ -556,6 +609,11 @@
 
     const fname = 'GTC-AV-Guide-' + scenario.replace(/[^a-z0-9]+/gi, '-') + '.pdf';
     doc.save(fname);
+
+    } finally {
+      btn.textContent = '📄 Download PDF Training Guide';
+      btn.disabled = false;
+    }
   });
 
   // ── NAVIGATION ────────────────────────────────────────────────────────────
