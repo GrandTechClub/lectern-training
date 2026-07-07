@@ -466,6 +466,9 @@
       const src = extractFirstSrc(step.body);
       if (src && !imgCache[src]) imgCache[src] = await loadImg(src);
     }
+    const loaded   = Object.values(imgCache).filter(Boolean).length;
+    const attempted = Object.keys(imgCache).length;
+    btn.textContent = `⏳ Building PDF… (${loaded}/${attempted} images loaded)`;
 
     // ── Strip HTML → plain text ──
     function toText(html) {
