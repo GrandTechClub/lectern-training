@@ -141,6 +141,10 @@
     }
 
     .step-body strong { color: #fff; }
+    .step-body .wifi-callout { color: #1a3a6b !important; }
+    .step-body .wifi-callout strong { color: #1a3a6b !important; }
+    .step-body .wifi-callout span { color: #1a3a6b !important; }
+    .step-body .wifi-callout .wifi-password { color: #b71c1c !important; }
     .step-body code {
       background: #0e2247;
       border-radius: 4px;
@@ -272,7 +276,7 @@
       <h2>4. Will you be using the microphone(s)?</h2>
       <div class="options">
         <button class="option-btn" data-q="mic" data-v="lectern-mic">Lectern microphone</button>
-        <button class="option-btn" data-q="mic" data-v="wireless">Wireless hand-held microphone</button>
+        <button class="option-btn" data-q="mic" data-v="wireless">Handheld microphone</button>
         <button class="option-btn" data-q="mic" data-v="handfree">Hands-free clip-on microphone</button>
         <button class="option-btn" data-q="mic" data-v="none">No microphone today</button>
       </div>
@@ -293,7 +297,7 @@
       <div class="options">
         <button class="option-btn" data-q="mic" data-v="none">No microphone today</button>
         <button class="option-btn" data-q="mic" data-v="handfree">Hands-free clip-on microphone</button>
-        <button class="option-btn" data-q="mic" data-v="wireless">Wireless hand-held microphone</button>
+        <button class="option-btn" data-q="mic" data-v="wireless">Handheld microphone</button>
         <button class="option-btn" data-q="mic" data-v="lectern-mic">Lectern microphone</button>
       </div>
     </div>
@@ -715,7 +719,7 @@
         title: 'The Audio Inputs — Microphones',
         body: `An audio input is a microphone that feeds sound into the room speakers. There are three options:<br><br>
           ${micPhoto('images/mic-lectern.png', 'Lectern microphone', '<strong>Lectern Microphone</strong> — built into the lectern. Check that the light at the base is <strong>green</strong> before use.')}
-          ${micPhoto('images/mic-wireless1.png', 'Wireless 1 handheld microphone', '<strong>Wireless Handheld Microphone</strong> — a hand-held wireless mic you can pass around the room.')}
+          ${micPhoto('images/mic-wireless1.png', 'Wireless 1 handheld microphone', '<strong>Handheld Microphone</strong> — a handheld mic you can pass around the room.')}
           ${micPhoto('images/mic-wireless2.png', 'Wireless 2 hands-free clip-on microphone', '<strong>Hands-Free Clip-On Microphone</strong> — a small mic you clip to your clothing, leaving your hands free.')}
           <br>You can also play audio directly from your device (e.g. a YouTube video) through the room speakers.`
       });
@@ -733,7 +737,7 @@
           The <strong>Audio Console</strong> controls which audio inputs play through the room speakers. It is always powered on.<br><br>
           Each channel has a button at the top — <strong>white</strong> means active, <strong>red/pink</strong> means muted.<br><br>
           The channels from left to right are:<br>
-          <strong>1st</strong> — Device Audio &nbsp;<strong>2nd</strong> — Lectern Mic &nbsp;<strong>3rd</strong> — Wireless Handheld &nbsp;<strong>4th</strong> — Hands-Free Clip-On<br><br>
+          <strong>1st</strong> — Device Audio &nbsp;<strong>2nd</strong> — Lectern Mic &nbsp;<strong>3rd</strong> — Handheld &nbsp;<strong>4th</strong> — Hands-Free Clip-On<br><br>
           The <strong>Class Rm button</strong> on the right must also be white for any audio to be heard.<br><br>
           <strong>Important:</strong> Always use a <strong>gentle tap</strong> here too — not a long press.`
       });
@@ -745,9 +749,9 @@
           3. Try out one of the <strong>microphones</strong> so you are comfortable with the audio setup.<br><br>
           Once you are comfortable with that setup, try connecting your own laptop or mobile device.<br><br>
           <strong>If you plan to connect your own device</strong>, you'll need to be on the Tech Club AV Wi-Fi:<br>
-          <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a3a6b;">
-            <strong style="font-size:1.05rem;">📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-2</span><br>
-            <strong style="font-size:1.05rem;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.1rem; color:#b71c1c; font-weight:700; letter-spacing:0.05em;">Tech1998!</span>
+          <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem;">
+            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
+            <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
           </div>
           When you are ready, click the <strong>"← Start Over / Change Answers"</strong> button below to go back and select <strong>"I am ready to present"</strong> for your personalized step-by-step guide.`
       });
@@ -831,9 +835,9 @@
         title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
         body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for ClickShare to work.<br><br>
           Check your Wi-Fi connection now. If you are not connected, join one of those networks.<br><br>
-          <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a3a6b;">
-            <strong style="font-size:1.05rem;">📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-2</span><br>
-            <strong style="font-size:1.05rem;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.1rem; color:#b71c1c; font-weight:700; letter-spacing:0.05em;">Tech1998!</span>
+          <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem;">
+            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
+            <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
           </div>
           Already connected? Hit Next Step.`
       });
@@ -842,9 +846,9 @@
         title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
         body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for screen mirroring to work.<br><br>
           Check your Wi-Fi connection now. If you are not connected, join one of those networks.<br><br>
-          <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a3a6b;">
-            <strong style="font-size:1.05rem;">📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-2</span><br>
-            <strong style="font-size:1.05rem;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.1rem; color:#b71c1c; font-weight:700; letter-spacing:0.05em;">Tech1998!</span>
+          <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem;">
+            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
+            <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
           </div>
           Already connected? Hit Next Step.`
       });
@@ -887,7 +891,7 @@
       steps.push({
         title: 'Wake up the Lectern Monitor',
         body: `${highlight('images/monitor-on-off-button.png', 'Monitor On/Off button on the lectern monitor', [], 70)}
-          The Lectern Monitor will not turn on by itself. Move the mouse or press a key on the lectern keyboard to wake it up.<br><br>
+          The Lectern Monitor may not turn on by itself. Move the mouse or press a key on the lectern keyboard to wake it up.<br><br>
           If it still stays black, press the <strong>Monitor ON/OFF</strong> button (shown above) on the bottom-left edge of the monitor.`
       });
       steps.push({
@@ -895,12 +899,14 @@
         body: `Before continuing, confirm that <strong>all three TVs</strong> and the <strong>Lectern Monitor</strong> are turned on and displaying something.<br><br>
           Once confirmed, you're ready to switch the input source.`
       });
-      steps.push({
-        title: 'Wake up the Lectern PC',
-        body: `Move the mouse or press any key on the lectern keyboard to wake up the Lectern PC.<br><br>
-          Wait a few seconds — the monitor should show the Windows desktop.<br><br>
-          <strong>If the monitor stays black after a few seconds:</strong> press the <strong>Monitor ON/OFF</strong> button on the bottom-left edge of the monitor to turn it off, then press it again to turn it back on.`
-      });
+      if (a.device === 'lectern-mac') {
+        steps.push({
+          title: 'Wake up the Lectern PC',
+          body: `Move the mouse or press any key on the lectern keyboard to wake up the Lectern PC.<br><br>
+            Wait a few seconds — the monitor should show the Windows desktop.<br><br>
+            <strong>If the monitor stays black after a few seconds:</strong> press the <strong>Monitor ON/OFF</strong> button on the bottom-left edge of the monitor to turn it off, then press it again to turn it back on.`
+        });
+      }
       steps.push({
         title: "Tap 'All TV's' again to switch the input source",
         body: `${highlight('images/console-home.png', 'Console home screen with All TVs highlighted', [
@@ -1056,18 +1062,15 @@
       });
       steps.push({
         title: "Select 'Roku Lectern' from the list",
-        body: `A list of available devices will appear. Click <strong>Roku Lectern</strong> to begin connecting.`
+        body: `A list of available devices will appear. Click <strong>Roku Lectern</strong> to begin connecting.<br><br>
+          The TV may briefly show a generic <strong>AirPlay waiting screen</strong> — this is normal. It means the Roku is ready and waiting for your Mac to finish connecting.`
       });
       steps.push({
-        title: 'Enter the AirPlay code shown on the TV',
-        body: `${highlight('images/mac-airplay-code.png', 'Enter the AirPlay code for Roku Lectern prompt', [], 60)}
-          A 4-digit code prompt will appear on your Mac, shown above. <strong>Look at the TVs</strong> for the code and type it in.`
-      });
-      steps.push({
-        title: "Choose 'Entire Screen' and click 'Start Mirroring'",
-        body: `${highlight('images/mac-what-to-show.png', 'What do you want to show on Roku Lectern dialog with Entire Screen selected', [], 90)}
-          Choose <strong>Entire Screen</strong> (shown above), then click <strong>Start Mirroring</strong>.<br><br>
-          Your Mac screen will appear on the TV within a few seconds. Audio and video both mirror automatically.`
+        title: 'Click through any prompts that appear',
+        body: `Depending on your Mac and macOS version, you may see one or more prompts:<br><br>
+          <strong>AirPlay code:</strong> If asked for a code, look at the TV for the 4-digit number and type it in.<br><br>
+          <strong>What to show:</strong> If asked, choose <strong>Entire Screen</strong> and click <strong>Start Mirroring</strong>.<br><br>
+          Not all Macs show these — just click through whatever appears. Your screen should show up on the TVs within a few seconds.`
       });
       steps.push({
         title: 'To stop mirroring when you are done',
@@ -1087,7 +1090,8 @@
           Before anything will be heard in the room, confirm two things on the audio console:<br><br>
           <strong>1. Master button</strong> (large round button, highlighted in orange above) will always be <strong>white</strong> — you do not need to press it.<br><br>
           <strong>2. Class Rm button</strong> (pink button above the Class Rm label, highlighted in red above) must also be <strong>white</strong>. If it is red/pink, press it to unmute.<br><br>
-          Both must be white or no audio will come through.`
+          Both must be white or no audio will come through.<br><br>
+          <strong>To adjust the room volume:</strong> turn the <strong>Class Rm dial</strong> (the knob below the Class Rm button) up or down.`
       });
 
       if (a.audio === 'yes') {
@@ -1114,7 +1118,13 @@
           body: `${highlight('images/mic-wireless1.png', 'Wireless 1 handheld microphone', [], 40)}
             This is the <strong>Wireless 1</strong> handheld microphone shown above. Find the channel labeled <strong>Wireless1</strong> on the audio console — it is the <strong>3rd button from the left</strong> and matches the "Wireless 1" label on the mic's pouch.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
-            This activates the wireless hand-held microphone.`
+            This activates the handheld microphone.`
+        });
+        steps.push({
+          title: 'Turn on the Handheld Microphone',
+          body: `${highlight('images/mic-wireless1-power.png', 'Wireless handheld mic power button', [], 50)}
+            Locate the handheld mic (found in the pouch labeled <strong>Wireless 1</strong>).<br><br>
+            Press and hold the <strong>power button</strong> (shown highlighted above) until the display lights up. The mic is now on and ready to use.`
         });
       }
       if (a.mic === 'handfree' || a.mic === 'both') {
