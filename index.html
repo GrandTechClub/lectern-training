@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tech Club Lectern A/V Guide</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -297,7 +298,13 @@
       </div>
     </div>
 
-    <button class="next-btn" id="show-steps-btn" disabled>Show me the steps →</button>
+    <div style="display:flex; flex-direction:column; gap:12px; align-items:stretch; margin-top:0;">
+      <button class="next-btn" id="show-steps-btn" disabled>Show me the steps →</button>
+      <button class="next-btn hidden" id="pdf-btn"
+        style="background:#3a8a2e; border-color:#3a8a2e; font-size:0.95rem;">
+        📄 Download PDF Training Guide
+      </button>
+    </div>
   </div>
 
   <!-- STEP-BY-STEP VIEW -->
@@ -349,6 +356,7 @@
           document.getElementById(id).classList.add('hidden'));
         delete answers.device; delete answers.audio; delete answers.mic;
         document.getElementById('show-steps-btn').disabled = true;
+        document.getElementById('pdf-btn').disabled = true;
 
         if (v === 'setup') {
           document.getElementById('q-device').classList.remove('hidden');
@@ -356,12 +364,14 @@
           // overview or shutdown — no further questions needed
           answers.device = v;
           document.getElementById('show-steps-btn').disabled = false;
+          document.getElementById('pdf-btn').classList.add('hidden');
         }
       } else if (q === 'device') {
         ['q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
           document.getElementById(id).classList.add('hidden'));
         delete answers.audio; delete answers.mic; delete answers.appInstalled;
         document.getElementById('show-steps-btn').disabled = true;
+        document.getElementById('pdf-btn').disabled = true;
 
         if (isLectern) {
           document.getElementById('q-audio-lectern').classList.remove('hidden');
@@ -379,6 +389,9 @@
       // Enable submit when audio + mic answered
       if (answers.audio && answers.mic) {
         document.getElementById('show-steps-btn').disabled = false;
+        const pdfBtn = document.getElementById('pdf-btn');
+        pdfBtn.classList.remove('hidden');
+        pdfBtn.disabled = false;
       }
     });
   });
@@ -391,6 +404,154 @@
     document.getElementById('questions-view').classList.add('hidden');
     document.getElementById('steps-view').classList.remove('hidden');
     renderStep();
+  });
+
+  // ── PDF EXPORT (jsPDF, text only) ───────────────────────────────────────
+  document.getElementById('pdf-btn').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc      = new jsPDF({ unit: 'pt', format: 'letter' });
+    const steps    = buildSteps(answers);
+    const scenario = describeScenario(answers);
+
+    const DARK_BLUE  = [14, 34, 71];
+    const MED_BLUE   = [26, 58, 107];
+    const GREEN      = [58, 138, 46];
+    const LIGHT_BLUE = [74, 144, 217];
+    const PAGE_W     = 612;
+    const MARGIN     = 50;
+    const CW         = PAGE_W - MARGIN * 2;   // content width
+    const BOTTOM     = 740;
+    const BODY_LH    = 13;                    // body line height
+    const TITLE_LH   = 15;                    // title line height
+
+    // ── Strip HTML → plain text ──
+    function toText(html) {
+      let t = (html || '')
+        .replace(/<button[^>]*>[\s\S]*?<\/button>/gi, '')
+        .replace(/<svg[\s\S]*?<\/svg>/gi, '')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/li>/gi, '\n')
+        .replace(/<li[^>]*>/gi, '• ')
+        .replace(/<\/?(ul|ol|p|div|tr)[^>]*>/gi, '\n')
+        .replace(/<[^>]+>/g, '');
+      const el = document.createElement('textarea');
+      el.innerHTML = t;
+      return el.value
+        .replace(/[📶🔑📄⏳]/gu, '')
+        .replace(/[ \t]+/g, ' ')
+        .split('\n')
+        .map(l => l.trim())
+        .filter((l, i, a) => l !== '' || (i > 0 && a[i - 1] !== ''))
+        .join('\n')
+        .trim();
+    }
+
+    // ── Page helpers ──
+    function drawHeader() {
+      doc.setFillColor(...DARK_BLUE);
+      doc.rect(0, 0, PAGE_W, 40, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(255, 255, 255);
+      doc.text('Grand Tech Club  —  Lectern A/V Training Guide', MARGIN, 26);
+    }
+
+    function newPage() { doc.addPage(); drawHeader(); return 60; }
+
+    function need(y, h) { return y + h > BOTTOM ? newPage() : y; }
+
+    // ── Cover ──
+    drawHeader();
+    let y = 68;
+
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+    doc.setTextColor(...DARK_BLUE);
+    doc.text('Step-by-Step Training Guide', MARGIN, y); y += 22;
+
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+    doc.setTextColor(...MED_BLUE);
+    doc.text('Scenario: ' + scenario, MARGIN, y); y += 10;
+
+    doc.setDrawColor(...LIGHT_BLUE); doc.setLineWidth(1.5);
+    doc.line(MARGIN, y, PAGE_W - MARGIN, y); y += 20;
+
+    // ── Steps ──
+    for (let i = 0; i < steps.length; i++) {
+      const step  = steps[i];
+      const num   = i + 1;
+      const total = steps.length;
+      const body  = toText(step.body);
+
+      // Pre-measure title
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+      const titleLines = doc.splitTextToSize(step.title, CW - 36);
+      const HDR_H = Math.max(26, titleLines.length * TITLE_LH + 8);
+
+      // Pre-measure body
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+      const bodyLines = body ? doc.splitTextToSize(body, CW - 20) : [];
+
+      // Make sure at least the header fits on current page
+      y = need(y, HDR_H + 16);
+
+      // ── Step header band ──
+      doc.setFillColor(235, 241, 250);
+      doc.roundedRect(MARGIN, y, CW, HDR_H, 4, 4, 'F');
+
+      // Badge
+      const midY = y + HDR_H / 2;
+      doc.setFillColor(...DARK_BLUE);
+      doc.circle(MARGIN + 14, midY, 11, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
+      doc.setTextColor(255, 255, 255);
+      doc.text(String(num), MARGIN + 14, midY + 3, { align: 'center' });
+
+      // "Step X of Y" on the right
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+      doc.setTextColor(100, 130, 170);
+      doc.text(`Step ${num} of ${total}`, PAGE_W - MARGIN - 4, midY + 3, { align: 'right' });
+
+      // Title — vertically centred in band
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+      doc.setTextColor(...GREEN);
+      const titleTopY = midY - ((titleLines.length - 1) * TITLE_LH) / 2 + 3;
+      titleLines.forEach((ln, li) => doc.text(ln, MARGIN + 32, titleTopY + li * TITLE_LH));
+
+      y += HDR_H + 8;
+
+      // ── Body text ──
+      if (bodyLines.length) {
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        doc.setTextColor(...MED_BLUE);
+        for (const ln of bodyLines) {
+          y = need(y, BODY_LH + 2);
+          doc.text(ln, MARGIN + 14, y);
+          y += BODY_LH;
+        }
+        y += 4;
+      }
+
+      // Divider
+      y += 5;
+      doc.setDrawColor(210, 226, 242); doc.setLineWidth(0.4);
+      doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+      y += 10;
+    }
+
+    // ── Footers ──
+    const pages = doc.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+      doc.setTextColor(160, 160, 160);
+      doc.text(
+        `Page ${p} of ${pages}  •  grandtechclub.github.io/lectern-training`,
+        PAGE_W / 2, 787, { align: 'center' }
+      );
+    }
+
+    const fname = 'GTC-AV-Guide-' + scenario.replace(/[^a-z0-9]+/gi, '-') + '.pdf';
+    doc.save(fname);
   });
 
   // ── NAVIGATION ────────────────────────────────────────────────────────────
@@ -427,6 +588,7 @@
     ['q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
       document.getElementById(id).classList.add('hidden'));
     document.getElementById('show-steps-btn').disabled = true;
+    document.getElementById('pdf-btn').classList.add('hidden');
     document.getElementById('complete-banner').classList.add('hidden');
     document.getElementById('step-card').classList.remove('hidden');
     document.getElementById('next-btn').classList.remove('hidden');
@@ -582,6 +744,11 @@
           2. Cast to <strong>all three TVs</strong> and the lectern monitor.<br>
           3. Try out one of the <strong>microphones</strong> so you are comfortable with the audio setup.<br><br>
           Once you are comfortable with that setup, try connecting your own laptop or mobile device.<br><br>
+          <strong>If you plan to connect your own device</strong>, you'll need to be on the Tech Club AV Wi-Fi:<br>
+          <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a3a6b;">
+            <strong style="font-size:1.05rem;">📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-2</span><br>
+            <strong style="font-size:1.05rem;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.1rem; color:#b71c1c; font-weight:700; letter-spacing:0.05em;">Tech1998!</span>
+          </div>
           When you are ready, click the <strong>"← Start Over / Change Answers"</strong> button below to go back and select <strong>"I am ready to present"</strong> for your personalized step-by-step guide.`
       });
       return steps;
@@ -661,18 +828,24 @@
       }
 
       steps.push({
-        title: 'Make sure you are connected to the Tech Club Wi-Fi',
-        body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for Clickshare to work.<br><br>
+        title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
+        body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for ClickShare to work.<br><br>
           Check your Wi-Fi connection now. If you are not connected, join one of those networks.<br><br>
-          Password: <code>Tech1998!</code><br><br>
+          <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a3a6b;">
+            <strong style="font-size:1.05rem;">📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-2</span><br>
+            <strong style="font-size:1.05rem;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.1rem; color:#b71c1c; font-weight:700; letter-spacing:0.05em;">Tech1998!</span>
+          </div>
           Already connected? Hit Next Step.`
       });
     } else if (a.device === 'iphone' || a.device === 'mac') {
       steps.push({
-        title: 'Make sure your device is connected to the AV-GTC Wifi',
+        title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
         body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for screen mirroring to work.<br><br>
           Check your Wi-Fi connection now. If you are not connected, join one of those networks.<br><br>
-          Password: <code>Tech1998!</code><br><br>
+          <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a3a6b;">
+            <strong style="font-size:1.05rem;">📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.05rem; color:#1a3a6b;">AV-GTC-2</span><br>
+            <strong style="font-size:1.05rem;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.1rem; color:#b71c1c; font-weight:700; letter-spacing:0.05em;">Tech1998!</span>
+          </div>
           Already connected? Hit Next Step.`
       });
     }
@@ -721,6 +894,12 @@
         title: 'Confirm the TVs and Monitor are all on',
         body: `Before continuing, confirm that <strong>all three TVs</strong> and the <strong>Lectern Monitor</strong> are turned on and displaying something.<br><br>
           Once confirmed, you're ready to switch the input source.`
+      });
+      steps.push({
+        title: 'Wake up the Lectern PC',
+        body: `Move the mouse or press any key on the lectern keyboard to wake up the Lectern PC.<br><br>
+          Wait a few seconds — the monitor should show the Windows desktop.<br><br>
+          <strong>If the monitor stays black after a few seconds:</strong> press the <strong>Monitor ON/OFF</strong> button on the bottom-left edge of the monitor to turn it off, then press it again to turn it back on.`
       });
       steps.push({
         title: "Tap 'All TV's' again to switch the input source",
@@ -872,7 +1051,7 @@
       steps.push({
         title: "Open Control Center and click 'Screen Mirroring'",
         body: `${highlight('images/mac-control-center.png', 'Mac menu bar Control Center icon and Screen Mirroring icon highlighted', [], 70)}
-          Look at the <strong>top-right corner</strong> of your screen, in the menu bar. Click the <strong>Control Center</strong> icon (highlighted above).<br><br>
+          On your <strong>Macbook</strong>, open Control Center: look at the <strong>top-right corner</strong> of your screen, in the menu bar, and click the <strong>Control Center</strong> icon (highlighted above).<br><br>
           In the panel that drops down, click the <strong>Screen Mirroring</strong> icon (also highlighted above).`
       });
       steps.push({
@@ -939,6 +1118,13 @@
         });
       }
       if (a.mic === 'handfree' || a.mic === 'both') {
+        steps.push({
+          title: 'Turn on the Hands-Free Clip-On Microphone',
+          body: `${highlight('images/mic-handsfree-power.png', 'Hands-free mic power button with green light', [], 50)}
+            Locate the hands-free clip-on mic unit (found in the pouch labeled <strong>Wireless 2</strong>).<br><br>
+            Press and hold the <strong>power button</strong> (the round button shown above) until the <strong>green light</strong> turns on. The unit is now powered on and ready to use.<br><br>
+            Clip the small microphone to your clothing near your collar for best audio.`
+        });
         steps.push({
           title: 'Unmute Wireless2 — 4th button from the left',
           body: `${highlight('images/mic-wireless2.png', 'Wireless 2 hands-free clip-on microphone', [], 40)}
