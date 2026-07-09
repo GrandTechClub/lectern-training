@@ -1140,15 +1140,11 @@
     const needsConsole = a.audio === 'yes' || (a.mic && a.mic !== 'none');
     if (needsConsole) {
       steps.push({
-        title: 'Check the audio console — unmute Master and Class Rm',
-        body: `${highlight('images/audio-console.png', 'Audio console showing Master button and Class Rm button', [
-            {x: 87, y: 21, w: 8,  h: 16, color: '#f39c12'},
+        title: 'Check the audio console — unmute the Class Rm button',
+        body: `${highlight('images/audio-console.png', 'Audio console showing Class Rm button', [
             {x: 77, y:  8, w: 8,  h: 12, color: '#e94560'}
           ])}
-          Before anything will be heard in the room, confirm two things on the audio console:<br><br>
-          <strong>1. Master button</strong> (large round button, highlighted in orange above) will always be <strong>white</strong> — you do not need to press it.<br><br>
-          <strong>2. Class Rm button</strong> (pink button above the Class Rm label, highlighted in red above) must also be <strong>white</strong>. If it is red/pink, press it to unmute.<br><br>
-          Both must be white or no audio will come through.<br><br>
+          Before anything will be heard in the room, check the <strong>Class Rm button</strong> (highlighted above). It must be <strong>white</strong>. If it is red/pink, press it to unmute.<br><br>
           <strong>To adjust the room volume:</strong> turn the <strong>Class Rm dial</strong> (the knob below the Class Rm button) up or down.`
       });
 
@@ -1175,8 +1171,7 @@
       if (a.mic === 'wireless' || a.mic === 'both') {
         steps.push({
           title: 'Unmute Wireless1 — 3rd button from the left',
-          body: `${highlight('images/mic-wireless1.png', 'Wireless 1 handheld microphone', [], 40)}
-            This is the <strong>Wireless 1</strong> handheld microphone shown above. Find the channel labeled <strong>Wireless1</strong> on the audio console — it is the <strong>3rd button from the left</strong> and matches the "Wireless 1" label on the mic's pouch.<br><br>
+          body: `Find the channel labeled <strong>Wireless1</strong> on the audio console — it is the <strong>3rd button from the left</strong> and matches the "Wireless 1" label on the mic's pouch.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
             This activates the handheld microphone.`
         });
