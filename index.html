@@ -60,6 +60,7 @@
     }
     .option-btn:hover { border-color: #4a90d9; background: #d0e8f8; }
     .option-btn.selected { border-color: #4a90d9; background: #d0e8f8; color: #1a3a6b; font-weight: 600; }
+    .option-btn:disabled { opacity: 0.38; cursor: not-allowed; border-color: #c0c0c0; background: #f0f0f0; color: #999; }
 
     .next-btn {
       background: #3a8a2e;
@@ -259,7 +260,17 @@
       <div class="options">
         <button class="option-btn" data-q="mode" data-v="overview">I'm new here — show me how everything works</button>
         <button class="option-btn" data-q="mode" data-v="setup">I'm ready to present — walk me through the setup</button>
+        <button class="option-btn" data-q="mode" data-v="troubleshoot">Troubleshooting — something isn't working</button>
         <button class="option-btn" data-q="mode" data-v="shutdown">I'm done presenting — help me shut everything down</button>
+      </div>
+    </div>
+
+    <!-- Q: Single vs multiple device casting -->
+    <div class="question hidden" id="q-casting-type">
+      <h2>2. How will you be presenting today?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="castingType" data-v="single">One device on all TVs — simple setup</button>
+        <button class="option-btn" data-q="castingType" data-v="multi">Multiple devices — different content on different screens</button>
       </div>
     </div>
 
@@ -296,6 +307,16 @@
       </div>
     </div>
 
+    <!-- Q: Single-device ClickShare method (Windows/Mac) -->
+    <div class="question hidden" id="q-cs-method">
+      <h2>3. How will you connect via ClickShare?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="csMethod" data-v="app">ClickShare app — already installed on my laptop</button>
+        <button class="option-btn" data-q="csMethod" data-v="app-install">ClickShare app — I need to install it first</button>
+        <button class="option-btn" data-q="csMethod" data-v="button">ClickShare Button — USB dongle (I'll plug it in)</button>
+      </div>
+    </div>
+
     <!-- Q: Personal device audio -->
     <div class="question hidden" id="q-audio">
       <h2 id="q-audio-label">2. Will you be playing something with sound from your device?</h2>
@@ -313,6 +334,120 @@
         <button class="option-btn" data-q="mic" data-v="handfree">Hands-free clip-on microphone</button>
         <button class="option-btn" data-q="mic" data-v="wireless">Handheld microphone</button>
         <button class="option-btn" data-q="mic" data-v="lectern-mic">Lectern microphone</button>
+      </div>
+    </div>
+
+    <!-- Q: How many devices (multi only) -->
+    <div class="question hidden" id="q-multi-count">
+      <h2>3. How many devices will be casting?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="multiCount" data-v="2">2 devices</button>
+        <button class="option-btn" data-q="multiCount" data-v="3">3 devices — Lectern + 2 personal devices</button>
+      </div>
+    </div>
+
+    <!-- Q: 3-device — which lectern device -->
+    <div class="question hidden" id="q-lectern-type">
+      <h2 id="q-lectern-type-label">4. Which Lectern device will you use?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="lecternType" data-v="lectern-pc">Lectern PC</button>
+        <button class="option-btn" data-q="lecternType" data-v="lectern-mac">Lectern Mac</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 1 type -->
+    <div class="question hidden" id="q-dev1-type">
+      <h2 id="q-dev1-type-label">4. Device 1 — what type of device?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev1Type" data-v="pc">Windows laptop / PC</button>
+        <button class="option-btn" data-q="dev1Type" data-v="mac">MacBook / Mac</button>
+        <button class="option-btn" data-q="dev1Type" data-v="iphone">iPhone or iPad</button>
+        <button class="option-btn" data-q="dev1Type" data-v="android">Android phone or tablet</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 1 casting method -->
+    <div class="question hidden" id="q-dev1-method">
+      <h2>5. Device 1 — how will it cast?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev1Method" data-v="roku">Roku (AirPlay / Screen Mirroring / Miracast)</button>
+        <button class="option-btn" data-q="dev1Method" data-v="cs">ClickShare (app or Button)</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 1 ClickShare connection method (Windows/Mac only) -->
+    <div class="question hidden" id="q-dev1-cs-method">
+      <h2>6. Device 1 — how will you connect via ClickShare?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev1CsMethod" data-v="app">ClickShare app — already installed on my laptop</button>
+        <button class="option-btn" data-q="dev1CsMethod" data-v="button">ClickShare Button — USB dongle (I'll plug it in)</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 1 screens (multi-select) -->
+    <div class="question hidden" id="q-dev1-screens">
+      <h2>6. Device 1 — which screens? <small style="color:#5a7a9a; font-weight:normal;">(select all that apply)</small></h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev1Screens" data-v="lectern-monitor" data-multi="true">Lectern Monitor</button>
+        <button class="option-btn" data-q="dev1Screens" data-v="left-tv" data-multi="true">Left TV</button>
+        <button class="option-btn" data-q="dev1Screens" data-v="main-tv" data-multi="true">Main TV</button>
+        <button class="option-btn" data-q="dev1Screens" data-v="right-tv" data-multi="true">Right TV</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 2 type -->
+    <div class="question hidden" id="q-dev2-type">
+      <h2>7. Device 2 — what type of device?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev2Type" data-v="pc">Windows laptop / PC</button>
+        <button class="option-btn" data-q="dev2Type" data-v="mac">MacBook / Mac</button>
+        <button class="option-btn" data-q="dev2Type" data-v="iphone">iPhone or iPad</button>
+        <button class="option-btn" data-q="dev2Type" data-v="android">Android phone or tablet</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 2 ClickShare connection method (Windows/Mac only) -->
+    <div class="question hidden" id="q-dev2-cs-method">
+      <h2>8. Device 2 — how will you connect via ClickShare?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev2CsMethod" data-v="app">ClickShare app — already installed on my laptop</button>
+        <button class="option-btn" data-q="dev2CsMethod" data-v="button">ClickShare Button — USB dongle (I'll plug it in)</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 2 casting method -->
+    <div class="question hidden" id="q-dev2-method">
+      <h2>8. Device 2 — how will it cast?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev2Method" data-v="roku">Roku (AirPlay / Screen Mirroring / Miracast)</button>
+        <button class="option-btn" data-q="dev2Method" data-v="cs">ClickShare (app or Button)</button>
+      </div>
+    </div>
+
+    <!-- Q: Device 2 screens (multi-select) -->
+    <div class="question hidden" id="q-dev2-screens">
+      <h2>9. Device 2 — which screens? <small style="color:#5a7a9a; font-weight:normal;">(via <span id="dev2-method-label">ClickShare</span> — select all that apply)</small></h2>
+      <div class="options">
+        <button class="option-btn" data-q="dev2Screens" data-v="lectern-monitor" data-multi="true">Lectern Monitor</button>
+        <button class="option-btn" data-q="dev2Screens" data-v="left-tv" data-multi="true">Left TV</button>
+        <button class="option-btn" data-q="dev2Screens" data-v="main-tv" data-multi="true">Main TV</button>
+        <button class="option-btn" data-q="dev2Screens" data-v="right-tv" data-multi="true">Right TV</button>
+      </div>
+    </div>
+
+    <!-- placeholder kept for reset logic -->
+    <div class="question hidden" id="q-multi-combo"></div>
+    <div class="question hidden" id="q-multi-device2"></div>
+
+    <!-- Q: Troubleshooting type -->
+    <div class="question hidden" id="q-trouble-type">
+      <h2>2. What seems to be the problem?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="troubleType" data-v="reset">Nothing is working right — I need to reset everything</button>
+        <button class="option-btn" data-q="troubleType" data-v="tv">A TV won't turn on, turn off, or respond</button>
+        <button class="option-btn" data-q="troubleType" data-v="device">My device isn't showing up on the TVs</button>
+        <button class="option-btn" data-q="troubleType" data-v="audio">Audio / sound isn't working</button>
+        <button class="option-btn" data-q="troubleType" data-v="stuck">I've already tried the basics and I'm still stuck</button>
       </div>
     </div>
 
@@ -356,11 +491,87 @@
   let allSteps = [];
   let currentStep = 0;
 
+  // ── HELPERS ───────────────────────────────────────────────────────────────
+  const multiDevQs = ['q-lectern-type','q-dev1-type','q-dev1-method','q-dev1-cs-method','q-dev1-screens',
+                      'q-dev2-type','q-dev2-method','q-dev2-cs-method','q-dev2-screens'];
+
+  function resetMultiDevAnswers() {
+    delete answers.lecternType;
+    delete answers.dev1Type; delete answers.dev1Method; delete answers.dev1CsMethod; answers.dev1Screens = [];
+    delete answers.dev2Type; delete answers.dev2Method; delete answers.dev2CsMethod; answers.dev2Screens = [];
+    delete answers.audio; delete answers.mic;
+    document.querySelectorAll('[data-q="dev1Screens"],[data-q="dev2Screens"]')
+      .forEach(b => b.classList.remove('selected'));
+    ['q-audio','q-mic'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  }
+
+  function needsCsMethod(deviceType, castMethod) {
+    return castMethod === 'cs' && (deviceType === 'pc' || deviceType === 'mac');
+  }
+
+  function checkMulti2Complete() {
+    const lecternOk = answers.multiCount !== '3' || !!answers.lecternType;
+    const d1CsOk = !needsCsMethod(answers.dev1Type, answers.dev1Method) || answers.dev1CsMethod;
+    const d2CsOk = !needsCsMethod(answers.dev2Type, answers.dev2Method) || answers.dev2CsMethod;
+    const devicesComplete = lecternOk
+      && answers.dev1Type && answers.dev1Method && (answers.dev1Screens||[]).length > 0 && d1CsOk
+      && answers.dev2Type && answers.dev2Method && (answers.dev2Screens||[]).length > 0 && d2CsOk;
+
+    if (devicesComplete && !answers.audio) {
+      document.getElementById('q-audio-label').textContent =
+        'Will any device be playing audio through the room speakers? (e.g. a YouTube video, music, or any device sound)';
+      showQuestion('q-audio');
+    }
+
+    const allComplete = devicesComplete && !!answers.audio && !!answers.mic;
+    document.getElementById('show-steps-btn').disabled = !allComplete;
+    if (allComplete) {
+      const pdfBtn = document.getElementById('pdf-btn');
+      pdfBtn.classList.remove('hidden');
+      pdfBtn.disabled = false;
+    }
+  }
+
+  function syncDev2Screens() {
+    const taken = new Set(answers.dev1Screens || []);
+    document.querySelectorAll('[data-q="dev2Screens"]').forEach(btn => {
+      if (taken.has(btn.dataset.v)) {
+        btn.disabled = true;
+        btn.classList.remove('selected');
+        answers.dev2Screens = (answers.dev2Screens || []).filter(s => s !== btn.dataset.v);
+      } else {
+        btn.disabled = false;
+      }
+    });
+    checkMulti2Complete();
+  }
+
+  function showQuestion(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('hidden');
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+
   // ── QUESTION BRANCHING ────────────────────────────────────────────────────
   document.querySelectorAll('.option-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const q = btn.dataset.q;
       const v = btn.dataset.v;
+
+      // Multi-select (screen assignments) — toggle, don't clear siblings
+      if (btn.dataset.multi) {
+        btn.classList.toggle('selected');
+        answers[q] = [...document.querySelectorAll(`.option-btn[data-q="${q}"].selected`)].map(b => b.dataset.v);
+        if (q === 'dev1Screens') {
+          syncDev2Screens();
+          if (answers.dev1Screens.length > 0) {
+            document.getElementById('q-dev2-type').classList.remove('hidden');
+          }
+        } else {
+          checkMulti2Complete();
+        }
+        return;
+      }
 
       document.querySelectorAll(`.option-btn[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
@@ -368,48 +579,152 @@
 
       const isLectern = answers.device === 'lectern-pc' || answers.device === 'lectern-mac';
 
+      const allSubQs = ['q-casting-type','q-multi-count','q-multi-combo','q-multi-device2',
+                        ...multiDevQs,'q-trouble-type',
+                        'q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'];
+
       if (q === 'mode') {
-        // Reset everything below
-        ['q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
-          document.getElementById(id).classList.add('hidden'));
+        allSubQs.forEach(id => document.getElementById(id).classList.add('hidden'));
         delete answers.device; delete answers.audio; delete answers.mic;
+        delete answers.castingType; delete answers.multiCount;
+        delete answers.troubleType;
+        resetMultiDevAnswers();
         document.getElementById('show-steps-btn').disabled = true;
-        document.getElementById('pdf-btn').disabled = true;
+        document.getElementById('pdf-btn').classList.add('hidden');
 
         if (v === 'setup') {
-          document.getElementById('q-device').classList.remove('hidden');
+          showQuestion('q-casting-type');
+        } else if (v === 'troubleshoot') {
+          answers.device = 'troubleshoot';
+          showQuestion('q-trouble-type');
         } else {
-          // overview or shutdown — no further questions needed
           answers.device = v;
           document.getElementById('show-steps-btn').disabled = false;
-          document.getElementById('pdf-btn').classList.add('hidden');
         }
+      } else if (q === 'castingType') {
+        ['q-multi-count',...multiDevQs,'q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic']
+          .forEach(id => document.getElementById(id).classList.add('hidden'));
+        delete answers.device; delete answers.audio; delete answers.mic;
+        delete answers.multiCount;
+        resetMultiDevAnswers();
+        document.getElementById('show-steps-btn').disabled = true;
+
+        if (v === 'single') {
+          showQuestion('q-device');
+        } else {
+          showQuestion('q-multi-count');
+        }
+      } else if (q === 'multiCount') {
+        multiDevQs.forEach(id => document.getElementById(id).classList.add('hidden'));
+        resetMultiDevAnswers();
+        document.getElementById('show-steps-btn').disabled = true;
+
+        if (v === '2') {
+          document.getElementById('q-dev1-type-label').textContent = '4. Device 1 — what type of device?';
+          showQuestion('q-dev1-type');
+        } else {
+          showQuestion('q-lectern-type');
+        }
+      } else if (q === 'lecternType') {
+        delete answers.audio; delete answers.mic;
+        ['q-audio','q-mic'].forEach(id => document.getElementById(id).classList.add('hidden'));
+        document.getElementById('q-dev1-type-label').textContent = '5. Personal Device 1 — what type of device?';
+        showQuestion('q-dev1-type');
+      } else if (q === 'dev1Type') {
+        ['q-dev1-method','q-dev1-cs-method','q-dev1-screens','q-dev2-type','q-dev2-method','q-dev2-cs-method','q-dev2-screens','q-audio','q-mic']
+          .forEach(id => document.getElementById(id).classList.add('hidden'));
+        delete answers.dev1Method; delete answers.dev1CsMethod; answers.dev1Screens = [];
+        delete answers.dev2Type; delete answers.dev2Method; delete answers.dev2CsMethod; answers.dev2Screens = [];
+        delete answers.audio; delete answers.mic;
+        document.querySelectorAll('[data-q="dev1Screens"],[data-q="dev2Screens"]')
+          .forEach(b => b.classList.remove('selected'));
+        // Re-enable all dev2Type buttons, then disable the one just chosen for dev1
+        document.querySelectorAll('[data-q="dev2Type"]').forEach(b => { b.disabled = false; });
+        document.querySelector(`[data-q="dev2Type"][data-v="${v}"]`).disabled = true;
+        document.getElementById('show-steps-btn').disabled = true;
+        showQuestion('q-dev1-method');
+      } else if (q === 'dev1Method') {
+        ['q-dev1-cs-method','q-dev1-screens','q-dev2-type','q-dev2-method','q-dev2-cs-method','q-dev2-screens','q-audio','q-mic']
+          .forEach(id => document.getElementById(id).classList.add('hidden'));
+        delete answers.dev1CsMethod; answers.dev1Screens = [];
+        delete answers.dev2Type; delete answers.dev2CsMethod; answers.dev2Screens = [];
+        delete answers.audio; delete answers.mic;
+        document.querySelectorAll('[data-q="dev1Screens"],[data-q="dev2Screens"]')
+          .forEach(b => b.classList.remove('selected'));
+        document.getElementById('show-steps-btn').disabled = true;
+        // Auto-assign the opposite method to device 2
+        answers.dev2Method = (v === 'roku') ? 'cs' : 'roku';
+        document.getElementById('dev2-method-label').textContent = (v === 'roku') ? 'ClickShare' : 'Roku';
+        if (needsCsMethod(answers.dev1Type, v)) {
+          showQuestion('q-dev1-cs-method');
+        } else {
+          showQuestion('q-dev1-screens');
+        }
+      } else if (q === 'dev1CsMethod') {
+        showQuestion('q-dev1-screens');
+      } else if (q === 'dev2Type') {
+        ['q-dev2-cs-method','q-dev2-screens','q-audio','q-mic']
+          .forEach(id => document.getElementById(id).classList.add('hidden'));
+        delete answers.dev2CsMethod; answers.dev2Screens = [];
+        delete answers.audio; delete answers.mic;
+        document.querySelectorAll('[data-q="dev2Screens"]').forEach(b => b.classList.remove('selected'));
+        document.getElementById('show-steps-btn').disabled = true;
+        if (needsCsMethod(v, answers.dev2Method)) {
+          showQuestion('q-dev2-cs-method');
+        } else {
+          showQuestion('q-dev2-screens');
+          syncDev2Screens();
+        }
+      } else if (q === 'dev2CsMethod') {
+        showQuestion('q-dev2-screens');
+        syncDev2Screens();
+      } else if (q === 'dev2Method') {
+        document.getElementById('q-dev2-screens').classList.add('hidden');
+        answers.dev2Screens = [];
+        document.querySelectorAll('[data-q="dev2Screens"]').forEach(b => b.classList.remove('selected'));
+        document.getElementById('show-steps-btn').disabled = true;
+        showQuestion('q-dev2-screens');
+      } else if (q === 'multiDevice2') {
+        document.getElementById('show-steps-btn').disabled = false;
+      } else if (q === 'troubleType') {
+        document.getElementById('show-steps-btn').disabled = false;
       } else if (q === 'device') {
-        ['q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
+        ['q-cs-method','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
           document.getElementById(id).classList.add('hidden'));
-        delete answers.audio; delete answers.mic; delete answers.appInstalled;
+        delete answers.audio; delete answers.mic; delete answers.appInstalled; delete answers.csMethod;
         document.getElementById('show-steps-btn').disabled = true;
         document.getElementById('pdf-btn').disabled = true;
 
         if (isLectern) {
-          document.getElementById('q-audio-lectern').classList.remove('hidden');
+          showQuestion('q-audio-lectern');
+        } else if (v === 'windows') {
+          showQuestion('q-cs-method');
         } else {
-          const names = { mac:'Macbook', iphone:'iPhone / iPad', android:'Android phone' };
+          const names = { mac:'MacBook', iphone:'iPhone / iPad', android:'Android phone' };
           const name = names[v] || 'device';
           document.getElementById('q-audio-label').textContent =
             `3. Will you be playing something with sound from your ${name}? (e.g. a YouTube video, music, or any audio from your ${name})`;
-          document.getElementById('q-audio').classList.remove('hidden');
+          showQuestion('q-audio');
         }
+      } else if (q === 'csMethod') {
+        const devName = answers.device === 'mac' ? 'Mac' : 'Windows laptop';
+        document.getElementById('q-audio-label').textContent =
+          `4. Will you be playing something with sound from your ${devName}? (e.g. a YouTube video, music, or any audio)`;
+        showQuestion('q-audio');
       } else if (q === 'audio') {
-        document.getElementById(isLectern ? 'q-mic-lectern' : 'q-mic').classList.remove('hidden');
+        showQuestion(isLectern ? 'q-mic-lectern' : 'q-mic');
       }
 
       // Enable submit when audio + mic answered
       if (answers.audio && answers.mic) {
-        document.getElementById('show-steps-btn').disabled = false;
-        const pdfBtn = document.getElementById('pdf-btn');
-        pdfBtn.classList.remove('hidden');
-        pdfBtn.disabled = false;
+        if (answers.castingType === 'multi') {
+          checkMulti2Complete();
+        } else {
+          document.getElementById('show-steps-btn').disabled = false;
+          const pdfBtn = document.getElementById('pdf-btn');
+          pdfBtn.classList.remove('hidden');
+          pdfBtn.disabled = false;
+        }
       }
     });
   });
@@ -642,6 +957,10 @@
         banner.textContent = '✅ Great job! You now have a good understanding of the lectern A/V system. Click "Start Over / Change Answers" below when you are ready to set up for your presentation.';
       } else if (answers.device === 'shutdown') {
         banner.textContent = '✅ All done! The lectern and TVs have been shut down. Thank you!';
+      } else if (answers.device === 'troubleshoot') {
+        banner.textContent = '✅ Done! If the issue is resolved, great. If not, text Carol or Ann — do not unplug or power down anything so the system can be diagnosed as-is.';
+      } else if (answers.castingType === 'multi') {
+        banner.textContent = '✅ Multi-device setup complete! Confirm each TV is showing the right content before your session begins.';
       } else {
         banner.textContent = '✅ All done! Your A/V setup is complete. You are ready to use the lectern.';
       }
@@ -655,14 +974,26 @@
   });
 
   document.getElementById('prev-btn').addEventListener('click', () => {
-    if (currentStep > 0) { currentStep--; renderStep(); }
+    if (currentStep > 0) {
+      currentStep--;
+      renderStep();
+    } else {
+      // On step 1, Back returns to the questions — mirror what start-over does
+      document.getElementById('steps-view').classList.add('hidden');
+      document.getElementById('questions-view').classList.remove('hidden');
+      document.getElementById('show-steps-btn').disabled = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
 
   document.getElementById('restart-btn').addEventListener('click', () => {
     Object.keys(answers).forEach(k => delete answers[k]);
     document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-    ['q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
+    ['q-casting-type','q-multi-count','q-multi-combo','q-multi-device2',
+     'q-dev1-type','q-dev1-method','q-dev1-screens','q-dev2-type','q-dev2-method','q-dev2-screens',
+     'q-trouble-type','q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
       document.getElementById(id).classList.add('hidden'));
+    resetMultiDevAnswers();
     document.getElementById('show-steps-btn').disabled = true;
     document.getElementById('pdf-btn').classList.add('hidden');
     document.getElementById('complete-banner').classList.add('hidden');
@@ -686,7 +1017,7 @@
     document.getElementById('step-title').textContent = s.title;
     document.getElementById('step-body').innerHTML = s.body;
 
-    document.getElementById('prev-btn').disabled = currentStep === 0;
+    document.getElementById('prev-btn').disabled = false;
 
     const nextBtn = document.getElementById('next-btn');
     if (s.noNext) {
@@ -722,6 +1053,22 @@
   function describeScenario(a) {
     if (a.device === 'overview') return 'System Overview';
     if (a.device === 'shutdown') return 'Shutting down';
+    if (a.device === 'troubleshoot') {
+      const t = { reset:'Reset / General', tv:'TV not responding', device:'Device not showing',
+        audio:'Audio not working', stuck:'Still stuck' }[a.troubleType] || 'Troubleshooting';
+      return `Troubleshooting · ${t}`;
+    }
+    if (a.castingType === 'multi') {
+      if (a.multiCount === '3') return 'Multi-device · Lectern + Roku + ClickShare';
+      // 2-device per-device answers
+      const dLabel = { pc:'PC', mac:'Mac', iphone:'iPhone/iPad', android:'Android' };
+      const mLabel = { roku:'Roku', cs:'ClickShare' };
+      const d1 = dLabel[a.dev1Type] || 'Device 1';
+      const d2 = dLabel[a.dev2Type] || 'Device 2';
+      const m1 = mLabel[a.dev1Method] || '';
+      const m2 = mLabel[a.dev2Method] || '';
+      return `2 devices: ${d1} via ${m1} | ${d2} via ${m2}`;
+    }
     const device = { 'lectern-pc':'Lectern PC', 'lectern-mac':'Lectern Mac', mac:'Macbook',
       windows:'Windows laptop', iphone:'iPhone/iPad', android:'Android' }[a.device] || a.device;
     const audio = a.audio === 'yes' ? 'with audio' : 'no audio';
@@ -758,6 +1105,9 @@
 
   // ── STEP BUILDER ──────────────────────────────────────────────────────────
   function buildSteps(a) {
+    if (a.device === 'troubleshoot') return buildTroubleshootSteps(a);
+    if (a.castingType === 'multi') return buildMultiSteps(a);
+
     const steps = [];
     const isLectern = a.device === 'lectern-pc' || a.device === 'lectern-mac';
     const isWindows = a.device === 'windows';
@@ -875,41 +1225,58 @@
       return steps;
     }
 
-    // ── DEVICE PREP: App + Wi-Fi check (own devices only) ──────────────────
-    if (isWindows || a.device === 'android') {
-      const deviceLabel = isWindows ? 'Windows laptop' : 'Android device';
+    // ── DEVICE PREP: Connection method + Wi-Fi check (own devices only) ─────
+    if (isWindows || a.device === 'mac') {
+      const csMethod = a.csMethod || 'app';
 
-      if (a.appInstalled === undefined) {
+      if (csMethod === 'button') {
         steps.push({
-          title: 'Do you already have the Clickshare app installed?',
-          noNext: true,
-          body: `Let us know if you already have the Clickshare app on your ${deviceLabel}.<br><br>
-            ${choiceButtons("window.answerAppInstalled('yes')", "window.answerAppInstalled('no')",
-              'Yes, it’s already installed', 'No, I need to install it')}`
+          title: 'Get the ClickShare Button ready',
+          body: `Plug the <strong>ClickShare Button</strong> (USB dongle) into your laptop's USB port.<br><br>
+            The Button's LED will light up. Wait for it to become <strong>solid white</strong> — this means it has connected to the room system.<br><br>
+            Once the LED is solid white, you are ready for the next step.`
         });
-      } else if (a.appInstalled === 'no') {
-        steps.push(isWindows ? {
-          title: 'Install the Clickshare app on your Windows laptop',
-          body: `Download it from the official Barco site only — other sources may cause issues:<br><br>
-            <a href="https://www.barco.com/en/products/clickshare-conferencing-collaboration/app" target="_blank" style="color:#e94560;">
-              Download Clickshare for Windows →
-            </a><br><br>
-            Once downloaded, run the installer and follow the prompts, then come back and hit Next Step.`
-        } : {
-          title: 'Install the Clickshare app on your Android device',
-          body: `${highlight('images/android-playstore.png', 'ClickShare app listing in the Google Play Store', [], 60)}
-            Download it from the <strong>Google Play Store</strong> (search "ClickShare", shown above) — other sources may cause issues.<br><br>
-            Once installed, come back and hit Next Step.`
+      } else {
+        if (csMethod === 'app-install') {
+          steps.push(isWindows ? {
+            title: 'Install the ClickShare app on your Windows laptop',
+            body: `Download it from the official Barco site only — other sources may cause issues:<br><br>
+              <a href="https://www.barco.com/en/products/clickshare-conferencing-collaboration/app" target="_blank" style="color:#e94560;">
+                Download ClickShare for Windows →
+              </a><br><br>
+              Once downloaded, run the installer and follow the prompts, then come back and hit Next Step.`
+          } : {
+            title: 'Install the ClickShare app on your Mac',
+            body: `Download it from the official Barco site only — other sources may cause issues:<br><br>
+              <a href="https://www.barco.com/en/products/clickshare-conferencing-collaboration/app" target="_blank" style="color:#e94560;">
+                Download ClickShare for Mac →
+              </a><br><br>
+              Once downloaded, open the .dmg file and follow the installation prompts, then come back and hit Next Step.`
+          });
+        }
+        steps.push({
+          title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
+          body: `The ClickShare app requires your laptop to be on the GTC network.<br><br>
+            <div class="wifi-callout" style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
+              <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
+              <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
+            </div>
+            Already connected? Hit Next Step.`
         });
       }
-
+    } else if (a.device === 'android') {
+      steps.push({
+        title: 'Install the ClickShare app on your Android device',
+        body: `${highlight('images/android-playstore.png', 'ClickShare app listing in the Google Play Store', [], 60)}
+          Download it from the <strong>Google Play Store</strong> (search "ClickShare", shown above) — other sources may cause issues.<br><br>
+          Once installed, come back and hit Next Step.`
+      });
       steps.push({
         title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
         body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for ClickShare to work.<br><br>
-          Check your Wi-Fi connection now. If you are not connected, join one of those networks.<br><br>
-          <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem;">
-            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
-            <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
+          <div class="wifi-callout" style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
+            <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
+            <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
           </div>
           Already connected? Hit Next Step.`
       });
@@ -1033,34 +1400,46 @@
 
     // ── WINDOWS CASTING ──────────────────────────────────────────────────
     if (isWindows) {
-      steps.push({
-        title: 'Launch the Clickshare app on your Windows laptop',
-        body: 'Open the Clickshare app from your <strong>Start menu</strong> or <strong>desktop shortcut</strong>.'
-      });
-      steps.push({
-        title: "Select 'ClickShare-GTC' from the Rooms nearby list",
-        body: `When the app opens you will see a <strong>"Rooms nearby"</strong> screen with <strong>ClickShare-GTC</strong> listed.<br><br>
-          Click on <strong>ClickShare-GTC</strong> (it will be highlighted in blue) to connect to the room system.`
-      });
-      steps.push({
-        title: 'Enter the 4-digit passcode shown on the TVs',
-        body: `You will be prompted to enter a <strong>4-digit passcode</strong>.<br><br>
-          <strong>Look at the TVs</strong> — the code will be displayed on screen. Type it into the app to complete the connection.`
-      });
-
-      if (a.audio === 'yes') {
+      if (a.csMethod === 'button') {
         steps.push({
-          title: 'Choose a specific app to share (required for audio)',
-          body: `You will be asked whether to share your <strong>entire screen</strong> or a <strong>specific app</strong>.<br><br>
-            Because you need audio from your laptop, you <strong>must choose a specific app</strong> (e.g. your browser or video player).<br><br>
-            <strong>Sharing the full screen will not carry audio</strong> through to the room speakers.`
+          title: 'Plug in the ClickShare Button',
+          body: `Plug the <strong>ClickShare Button</strong> into a USB port on your laptop.<br><br>
+            Wait for the Button's LED to turn <strong>solid white</strong> — this means it has connected to the room system.`
+        });
+        steps.push({
+          title: 'Press the white circle to start sharing',
+          body: `Press the <strong>white circle</strong> on top of the Button to start sharing your screen.<br><br>
+            Give it a few seconds — the screen may briefly go black before your content appears on the TVs.`
         });
       } else {
         steps.push({
-          title: 'Choose what to share',
-          body: `You will be asked whether to share your <strong>entire screen</strong> or a <strong>specific app</strong>.<br><br>
-            Since you don't need laptop audio, <strong>either option will work</strong> — choose whichever is most convenient for your session.`
+          title: 'Launch the Clickshare app on your Windows laptop',
+          body: 'Open the Clickshare app from your <strong>Start menu</strong> or <strong>desktop shortcut</strong>.'
         });
+        steps.push({
+          title: "Select 'ClickShare-GTC' from the Rooms nearby list",
+          body: `When the app opens you will see a <strong>"Rooms nearby"</strong> screen with <strong>ClickShare-GTC</strong> listed.<br><br>
+            Click on <strong>ClickShare-GTC</strong> (it will be highlighted in blue) to connect to the room system.`
+        });
+        steps.push({
+          title: 'Enter the 4-digit passcode shown on the TVs',
+          body: `You will be prompted to enter a <strong>4-digit passcode</strong>.<br><br>
+            <strong>Look at the TVs</strong> — the code will be displayed on screen. Type it into the app to complete the connection.`
+        });
+        if (a.audio === 'yes') {
+          steps.push({
+            title: 'Choose a specific app to share (required for audio)',
+            body: `You will be asked whether to share your <strong>entire screen</strong> or a <strong>specific app</strong>.<br><br>
+              Because you need audio from your laptop, you <strong>must choose a specific app</strong> (e.g. your browser or video player).<br><br>
+              <strong>Sharing the full screen will not carry audio</strong> through to the room speakers.`
+          });
+        } else {
+          steps.push({
+            title: 'Choose what to share',
+            body: `You will be asked whether to share your <strong>entire screen</strong> or a <strong>specific app</strong>.<br><br>
+              Since you don't need laptop audio, <strong>either option will work</strong> — choose whichever is most convenient for your session.`
+          });
+        }
       }
     }
 
@@ -1206,8 +1585,7 @@
         });
         steps.push({
           title: 'Unmute Wireless2 — 4th button from the left',
-          body: `${highlight('images/mic-wireless2.png', 'Wireless 2 hands-free clip-on microphone', [], 40)}
-            This is the <strong>Wireless 2</strong> hands-free clip-on microphone shown above. Find the channel labeled <strong>Wireless2</strong> on the audio console — it is the <strong>4th button from the left</strong> and matches the "Wireless 2" label on the mic's pouch.<br><br>
+          body: `Find the channel labeled <strong>Wireless2</strong> on the audio console — it is the <strong>4th button from the left</strong> and matches the "Wireless 2" label on the mic's pouch.<br><br>
             Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
             This activates the hands-free clip-on microphone.`
         });
@@ -1222,6 +1600,644 @@
         ${a.audio === 'yes' ? '✅ Audio from your device is coming through the <strong>room speakers</strong><br>' : ''}
         ${a.mic && a.mic !== 'none' ? '✅ Your microphone is <strong>audible in the room</strong><br>' : ''}
         <br>You're all set — enjoy your session! 🎉`
+    });
+
+    return steps;
+  }
+
+  // ── MULTI-DEVICE STEP BUILDER ─────────────────────────────────────────────
+  function buildMultiSteps(a) {
+    const steps = [];
+    const is3 = a.multiCount === '3';
+
+    if (!is3) return build2DeviceSteps(a);
+
+    // ── 3-device path (Lectern + 2 personal devices) ─────────────────────────
+    const dLabel3 = { pc:'Windows laptop', mac:'MacBook', iphone:'iPhone / iPad', android:'Android device' };
+    const lecternName = a.lecternType === 'lectern-mac' ? 'Lectern Mac' : 'Lectern PC';
+    const p1Name = dLabel3[a.dev1Type] || 'Personal Device 1';
+    const p2Name = dLabel3[a.dev2Type] || 'Personal Device 2';
+    const p1Roku = a.dev1Method === 'roku';
+    const p2Roku = a.dev2Method === 'roku';
+    const p1CS   = a.dev1Method === 'cs';
+    const p2CS   = a.dev2Method === 'cs';
+    const screenLabel3 = { 'lectern-monitor':'Lectern Monitor', 'left-tv':'Left TV',
+                           'main-tv':'Main TV', 'right-tv':'Right TV' };
+    function sl3(arr) {
+      return (arr||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(', ');
+    }
+    const wifiBox3 = `<div style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
+      <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
+      <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
+    </div>`;
+
+    // Step 1: Plan summary
+    steps.push({
+      title: `Your 3-device casting plan`,
+      body: `Here is what you told us you want to set up:<br><br>
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+          <tr style="background:rgba(255,255,255,0.08);">
+            <th style="text-align:left; padding:8px 10px;">Device</th>
+            <th style="text-align:left; padding:8px 10px;">Cast via</th>
+            <th style="text-align:left; padding:8px 10px;">Screens</th>
+          </tr>
+          <tr>
+            <td style="padding:8px 10px;"><strong>${lecternName}</strong></td>
+            <td style="padding:8px 10px;">On PC / On Mac (built-in)</td>
+            <td style="padding:8px 10px;">Remaining screens</td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.05);">
+            <td style="padding:8px 10px;"><strong>${p1Name}</strong></td>
+            <td style="padding:8px 10px;">${p1Roku ? 'Roku' : 'ClickShare'}</td>
+            <td style="padding:8px 10px;">${sl3(a.dev1Screens)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 10px;"><strong>${p2Name}</strong></td>
+            <td style="padding:8px 10px;">${p2Roku ? 'Roku' : 'ClickShare'}</td>
+            <td style="padding:8px 10px;">${sl3(a.dev2Screens)}</td>
+          </tr>
+        </table><br>
+        The steps below will walk you through setting up each device and assigning your screens.`
+    });
+
+    // Step 2: Turn on TVs
+    steps.push({
+      title: 'Wake up the console and turn on all TVs',
+      body: `${highlight('images/console-home.png', 'Console home screen', [])}
+        Tap the console to wake it up, then tap <strong>All TV's → On ${a.lecternType === 'lectern-mac' ? 'Mac' : 'PC'}</strong> to power on all screens.`
+    });
+
+    // Step 3: Wake up the lectern device
+    if (a.lecternType === 'lectern-mac') {
+      steps.push({
+        title: 'Wake up the Lectern Mac',
+        body: `${highlight('images/lectern-mac-keyboard.png', 'Lectern Mac keyboard and mouse on the lower shelf', [], 70)}
+          Click the mouse or tap any key on the <strong>Mac keyboard</strong> (shown above, on the lower shelf) to wake the Mac up. Give it about <strong>15 seconds</strong> to fully wake up and appear on the TVs.<br><br>
+          If the Mac screen prompts you for a password, enter: <code>pwpw</code>`
+      });
+    } else {
+      steps.push({
+        title: 'Wake up the Lectern PC',
+        body: `Move the mouse or press a key on the lectern keyboard to wake up the Lectern PC.<br><br>
+          Confirm all TVs and the Lectern Monitor are showing the PC desktop before continuing.`
+      });
+    }
+
+    // Steps for Personal Device 1
+    function castRokuInstructions3(deviceType) {
+      if (deviceType === 'pc') {
+        return `On your Windows laptop, open the <strong>Action Center</strong> (bottom-right corner of taskbar) → tap <strong>Connect</strong> → select <strong>Roku Lectern</strong>.<br><br>
+          If prompted for a PIN, look at the TV — it will display the code.<br><br>
+          Give it a few seconds. The screen may briefly go black before your content appears.`;
+      } else if (deviceType === 'mac') {
+        return `On your Mac, click the <strong>Control Center</strong> icon in the menu bar → click <strong>Screen Mirroring</strong> → select <strong>Roku Lectern</strong>.<br><br>
+          If prompted for a code, look at the TV — it will display it.<br><br>
+          Give it a few seconds. The screen may briefly go black before your content appears.`;
+      } else if (deviceType === 'iphone') {
+        return `On your iPhone or iPad, open <strong>Control Center</strong> (swipe down from top-right corner) → tap <strong>Screen Mirroring</strong> → select <strong>Roku Lectern</strong>.<br><br>
+          If prompted for a code, look at the TV — it will display it.<br><br>
+          Give it a few seconds. The screen may briefly go black before your content appears.`;
+      }
+      return `On your Android device, go to <strong>Settings → Connected devices</strong> (or search for <strong>Cast</strong>) → select <strong>Roku Lectern</strong>.<br><br>
+        If prompted for a PIN, look at the TV — it will display the code.<br><br>
+        Give it a few seconds. The screen may briefly go black before your content appears.`;
+    }
+    function connectCS3(devName, deviceType, csMethod) {
+      if (csMethod === 'button') {
+        return `<strong>ClickShare Button:</strong> Plug the Button into your device's USB port. It will connect automatically in a few seconds.<br><br>
+          When the Button's LED is solid white, press the <strong>white circle</strong> to start sharing your screen.<br><br>
+          Give it a few seconds — the screen may briefly go black before your content appears.`;
+      }
+      return `<strong>ClickShare app:</strong> Open the ClickShare app on your ${devName} → select <strong>ClickShare-GTC</strong> → enter the passcode shown on a TV → tap <strong>Share</strong> to confirm.<br><br>
+        Give it a few seconds — the screen may briefly go black before your content appears.`;
+    }
+
+    if (p1Roku) {
+      const p1Screens = (a.dev1Screens||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(' and ');
+      steps.push({
+        title: `Set Personal Device 1 screens to Roku on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want ${p1Name} to appear on and switch it to <strong>On Roku</strong>:<br><br>
+          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal.`
+      });
+      steps.push({
+        title: 'Select your output screen on the Roku',
+        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
+          From the Rooms list, select: ${p1Screens || 'the screen you want to use'}.<br><br>
+          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens, pick one to start — you can switch rooms later.</em>`
+      });
+      steps.push({
+        title: `${p1Name} — check your Wi-Fi`,
+        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox3}`
+      });
+      steps.push({
+        title: `${p1Name} — cast your screen via Roku`,
+        body: castRokuInstructions3(a.dev1Type)
+      });
+    }
+    if (p1CS) {
+      steps.push({
+        title: `Set Personal Device 1 screens to ClickShare on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want ${p1Name} to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
+          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal.`
+      });
+      steps.push({
+        title: `${p1Name} — check your Wi-Fi`,
+        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox3}`
+      });
+      steps.push({
+        title: `${p1Name} — connect via ClickShare`,
+        body: connectCS3(p1Name, a.dev1Type, a.dev1CsMethod)
+      });
+    }
+
+    // Steps for Personal Device 2
+    if (p2Roku) {
+      const p2Screens = (a.dev2Screens||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(' and ');
+      steps.push({
+        title: `Set Personal Device 2 screens to Roku on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want ${p2Name} to appear on and switch it to <strong>On Roku</strong>:<br><br>
+          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal.`
+      });
+      steps.push({
+        title: 'Select your output screen on the Roku',
+        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
+          From the Rooms list, select: ${p2Screens || 'the screen you want to use'}.<br><br>
+          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens, pick one to start — you can switch rooms later.</em>`
+      });
+      steps.push({
+        title: `${p2Name} — check your Wi-Fi`,
+        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox3}`
+      });
+      steps.push({
+        title: `${p2Name} — cast your screen via Roku`,
+        body: castRokuInstructions3(a.dev2Type)
+      });
+    }
+    if (p2CS) {
+      steps.push({
+        title: `Set Personal Device 2 screens to ClickShare on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want ${p2Name} to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
+          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal.`
+      });
+      steps.push({
+        title: `${p2Name} — check your Wi-Fi`,
+        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox3}`
+      });
+      steps.push({
+        title: `${p2Name} — connect via ClickShare`,
+        body: connectCS3(p2Name, a.dev2Type, a.dev2CsMethod)
+      });
+    }
+
+    // ── Audio / Mic ───────────────────────────────────────────────────────────
+    const appleNote3 = [a.dev1Type, a.dev2Type].some(t => t === 'mac' || t === 'iphone')
+      ? `<br><br><strong>⚠️ Important for Apple devices:</strong> Make sure any MacBook or iPhone/iPad is <strong>not muted</strong> — if muted, no sound will come through the room speakers.`
+      : '';
+    pushAudioMicSteps(steps, a, appleNote3);
+
+    // Final check
+    steps.push({
+      title: 'Do a final check before your session begins',
+      body: `Walk up to each screen and confirm it is showing what you expect:<br><br>
+        ${[...(a.dev1Screens||[]), ...(a.dev2Screens||[])].map(s => {
+          const src = (a.dev1Screens||[]).includes(s) ? p1Name : p2Name;
+          return `✅ <strong>${screenLabel3[s]||s}</strong> — ${src}`;
+        }).join('<br>')}<br><br>
+        Remaining screens stay on the ${lecternName}.<br><br>
+        If anything looks wrong, tap that screen's button on the console and re-select the correct source.`
+    });
+    return steps;
+  }
+
+  // ── SHARED AUDIO/MIC STEP BUILDER ────────────────────────────────────────
+  function pushAudioMicSteps(steps, a, appleVolumeNote) {
+    const needsConsole = a.audio === 'yes' || (a.mic && a.mic !== 'none');
+    if (!needsConsole) return;
+    steps.push({
+      title: 'Check the audio console — unmute the Class Rm button',
+      body: `${highlight('images/audio-console.png', 'Audio console showing Class Rm button', [
+          {x: 77, y: 8, w: 8, h: 12, color: '#e94560'}
+        ])}
+        Before anything will be heard in the room, check the <strong>Class Rm button</strong> (highlighted above). It must be <strong>white</strong>. If it is red/pink, press it to unmute.<br><br>
+        <strong>To adjust the room volume:</strong> turn the <strong>Class Rm dial</strong> (the knob below the Class Rm button) up or down.`
+    });
+    if (a.audio === 'yes') {
+      steps.push({
+        title: 'Unmute the Audio channel — leftmost button',
+        body: `Find the channel labeled <strong>Audio</strong> — it is the <strong>leftmost button</strong> on the console.<br><br>
+          Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
+          This allows sound from the selected device to play through the room speakers.${appleVolumeNote || ''}`
+      });
+    }
+    if (a.mic === 'lectern-mic') {
+      steps.push({
+        title: 'Unmute the Lectern Microphone — 2nd button from the left',
+        body: `${highlight('images/mic-lectern.png', 'Lectern microphone', [], 40)}
+          This is the <strong>Lectern Microphone</strong> shown above. On the audio console, find the channel labeled <strong>Lectern Mic</strong> — it is the <strong>2nd button from the left</strong>.<br><br>
+          Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
+          Then check the lectern microphone itself — look for the light at the bottom of the mic.
+          It should be lit <strong>green</strong>. If it is not, press the <strong>On</strong> button on the microphone to turn it on.`
+      });
+    }
+    if (a.mic === 'wireless' || a.mic === 'both') {
+      steps.push({
+        title: 'Unmute Wireless1 — 3rd button from the left',
+        body: `Find the channel labeled <strong>Wireless1</strong> on the audio console — it is the <strong>3rd button from the left</strong> and matches the "Wireless 1" label on the mic's pouch.<br><br>
+          Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
+          This activates the handheld microphone.`
+      });
+      steps.push({
+        title: 'Turn on the Handheld Microphone',
+        body: `${highlight('images/mic-wireless1-power.png', 'Wireless handheld mic power button', [], 50)}
+          Locate the handheld mic (found in the pouch labeled <strong>Wireless 1</strong>).<br><br>
+          <strong>Slide the power button</strong> (shown highlighted above) until the display lights up. The mic is now on and ready to use.`
+      });
+    }
+    if (a.mic === 'handfree' || a.mic === 'both') {
+      steps.push({
+        title: 'Turn on the Hands-Free Clip-On Microphone',
+        body: `${highlight('images/mic-handsfree-power.png', 'Hands-free mic power button with green light', [], 50)}
+          Locate the hands-free clip-on mic unit (found in the pouch labeled <strong>Wireless 2</strong>).<br><br>
+          Press and hold the <strong>power button</strong> (the round button shown above) until the <strong>green light</strong> turns on. The unit is now powered on and ready to use.<br><br>
+          Clip the small microphone to your clothing near your collar for best audio.`
+      });
+      steps.push({
+        title: 'Unmute Wireless2 — 4th button from the left',
+        body: `${highlight('images/mic-wireless2.png', 'Wireless 2 hands-free clip-on microphone', [], 40)}
+          This is the <strong>Wireless 2</strong> hands-free clip-on microphone shown above. Find the channel labeled <strong>Wireless2</strong> on the audio console — it is the <strong>4th button from the left</strong> and matches the "Wireless 2" label on the mic's pouch.<br><br>
+          Press the button at the top of that channel so it turns <strong>white</strong>.<br><br>
+          This activates the hands-free clip-on microphone.`
+      });
+    }
+  }
+
+  // ── 2-DEVICE STEP BUILDER ────────────────────────────────────────────────
+  function build2DeviceSteps(a) {
+    const steps = [];
+    const dLabel = { pc:'Windows PC / laptop', mac:'MacBook / Mac', iphone:'iPhone or iPad', android:'Android device' };
+    const d1Name = dLabel[a.dev1Type] || 'Device 1';
+    const d2Name = dLabel[a.dev2Type] || 'Device 2';
+    const d1Roku = a.dev1Method === 'roku';
+    const d2Roku = a.dev2Method === 'roku';
+    const d1CS   = a.dev1Method === 'cs';
+    const d2CS   = a.dev2Method === 'cs';
+    const anyCS  = d1CS || d2CS;
+    const screenLabel = { 'lectern-monitor':'Lectern Monitor', 'left-tv':'Left TV',
+                          'main-tv':'Main TV', 'right-tv':'Right TV' };
+
+    function screenList(arr) {
+      return (arr||[]).map(s => `<strong>${screenLabel[s]||s}</strong>`).join(', ');
+    }
+    const wifiBox = `<div style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
+        <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
+        <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
+      </div>`;
+
+    function castRokuInstructions(deviceType) {
+      if (deviceType === 'pc') {
+        return `On your Windows laptop, open the <strong>Action Center</strong> (bottom-right corner of taskbar) → tap <strong>Connect</strong> → select <strong>Roku Lectern</strong> from the list.<br><br>
+          If prompted for a PIN, look at the TV — it will display the code.<br><br>
+          Give it a few seconds. The screen may briefly go black before your content appears.`;
+      } else if (deviceType === 'mac') {
+        return `On your Mac, click the <strong>Control Center</strong> icon in the menu bar → click <strong>Screen Mirroring</strong> → select <strong>Roku Lectern</strong>.<br><br>
+          If prompted for a code, look at the TV — it will display it.<br><br>
+          Give it a few seconds. The screen may briefly go black before your content appears.`;
+      } else if (deviceType === 'iphone') {
+        return `On your iPhone or iPad, open <strong>Control Center</strong> (swipe down from top-right corner) → tap <strong>Screen Mirroring</strong> → select <strong>Roku Lectern</strong>.<br><br>
+          If prompted for a code, look at the TV — it will display it.<br><br>
+          Give it a few seconds. The screen may briefly go black before your content appears.`;
+      } else {
+        return `On your Android device, go to <strong>Settings → Connected devices</strong> (or search for <strong>Cast</strong>) → select <strong>Roku Lectern</strong> from the list.<br><br>
+          If prompted for a PIN, look at the TV — it will display the code.<br><br>
+          Give it a few seconds. The screen may briefly go black before your content appears.`;
+      }
+    }
+    function connectCS(deviceName, deviceType, csMethod) {
+      const isAndroid = deviceType === 'android';
+      const useButton = csMethod === 'button';
+      const useApp = csMethod === 'app' || isAndroid || (!csMethod && !isAndroid);
+
+      if (useButton) {
+        return `<strong>ClickShare Button:</strong> Plug the Button into your device's USB port. It will connect automatically in a few seconds.<br><br>
+          When the Button's LED is solid white, press the <strong>white circle</strong> to start sharing your screen.<br><br>
+          Give it a few seconds — the screen may briefly go black before your content appears.`;
+      }
+      return `<strong>ClickShare app:</strong> Open the ClickShare app on your ${deviceName} → select <strong>ClickShare-GTC</strong> from the list → enter the passcode shown on a TV → tap <strong>Share</strong> to confirm.<br><br>
+        Give it a few seconds — the screen may briefly go black before your content appears.`;
+    }
+
+    // ── Step 1: Your plan ─────────────────────────────────────────────────────
+    steps.push({
+      title: 'Your 2-device casting plan',
+      body: `Here is what you told us you want to set up:<br><br>
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+          <tr style="background:rgba(255,255,255,0.08);">
+            <th style="text-align:left; padding:8px 10px;">Device</th>
+            <th style="text-align:left; padding:8px 10px;">Cast via</th>
+            <th style="text-align:left; padding:8px 10px;">Screens</th>
+          </tr>
+          <tr>
+            <td style="padding:8px 10px;"><strong>${d1Name}</strong></td>
+            <td style="padding:8px 10px;">${d1Roku ? 'Roku' : 'ClickShare'}</td>
+            <td style="padding:8px 10px;">${screenList(a.dev1Screens)}</td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.05);">
+            <td style="padding:8px 10px;"><strong>${d2Name}</strong></td>
+            <td style="padding:8px 10px;">${d2Roku ? 'Roku' : 'ClickShare'}</td>
+            <td style="padding:8px 10px;">${screenList(a.dev2Screens)}</td>
+          </tr>
+        </table><br>
+        The steps below will walk you through connecting each device and assigning your screens.`
+    });
+
+    // ── Step 2: Turn on TVs ───────────────────────────────────────────────────
+    steps.push({
+      title: 'Wake up the console and turn on all TVs',
+      body: `${highlight('images/console-home.png', 'Console home screen', [])}
+        Tap the console to wake it up, then tap <strong>All TV's → On PC</strong> to power on all screens.<br><br>
+        You will reassign individual screens in a later step.`
+    });
+
+    // ── Steps for Device 1 ────────────────────────────────────────────────────
+    if (d1Roku) {
+      const d1RokuScreens = (a.dev1Screens || []).map(s => `<strong>${screenLabel[s]||s}</strong>`).join(' and ');
+      steps.push({
+        title: `Set Device 1 screens to Roku on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want Device 1 to appear on and switch it to <strong>On Roku</strong>:<br><br>
+          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal.`
+      });
+      steps.push({
+        title: 'Select your output screen on the Roku',
+        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
+          From the Rooms list, select: ${d1RokuScreens || 'the screen you want to use'}.<br><br>
+          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens above, pick one to start — you can switch rooms later.</em>`
+      });
+      steps.push({
+        title: `Device 1 (${d1Name}) — check your Wi-Fi`,
+        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox}`
+      });
+      steps.push({
+        title: `Device 1 (${d1Name}) — cast your screen via Roku`,
+        body: castRokuInstructions(a.dev1Type)
+      });
+    }
+    if (d1CS) {
+      steps.push({
+        title: `Set Device 1 screens to ClickShare on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want Device 1 to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
+          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal. Give it a few seconds before moving on.`
+      });
+      steps.push({
+        title: `Device 1 (${d1Name}) — check your Wi-Fi`,
+        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox}`
+      });
+      steps.push({
+        title: `Device 1 (${d1Name}) — connect via ClickShare`,
+        body: connectCS(d1Name, a.dev1Type, a.dev1CsMethod)
+      });
+    }
+
+    // ── Steps for Device 2 ────────────────────────────────────────────────────
+    if (d2Roku) {
+      const d2RokuScreens = (a.dev2Screens || []).map(s => `<strong>${screenLabel[s]||s}</strong>`).join(' and ');
+      steps.push({
+        title: `Set Device 2 screens to Roku on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want Device 2 to appear on and switch it to <strong>On Roku</strong>:<br><br>
+          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal.`
+      });
+      steps.push({
+        title: 'Select your output screen on the Roku',
+        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
+          From the Rooms list, select: ${d2RokuScreens || 'the screen you want to use'}.<br><br>
+          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens above, pick one to start — you can switch rooms later.</em>`
+      });
+      steps.push({
+        title: `Device 2 (${d2Name}) — check your Wi-Fi`,
+        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox}`
+      });
+      steps.push({
+        title: `Device 2 (${d2Name}) — cast your screen via Roku`,
+        body: castRokuInstructions(a.dev2Type)
+      });
+    }
+    if (d2CS) {
+      steps.push({
+        title: `Set Device 2 screens to ClickShare on the console`,
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap each screen you want Device 2 to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
+          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
+          The screen may briefly go black — that is normal. Give it a few seconds before moving on.`
+      });
+      steps.push({
+        title: `Device 2 (${d2Name}) — check your Wi-Fi`,
+        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox}`
+      });
+      steps.push({
+        title: `Device 2 (${d2Name}) — connect via ClickShare`,
+        body: connectCS(d2Name, a.dev2Type, a.dev2CsMethod)
+      });
+    }
+
+    // ── Audio / Mic ───────────────────────────────────────────────────────────
+    const appleNote2 = [a.dev1Type, a.dev2Type].some(t => t === 'mac' || t === 'iphone')
+      ? `<br><br><strong>⚠️ Important for Apple devices:</strong> Make sure any MacBook or iPhone/iPad is <strong>not muted</strong> — if muted, no sound will come through the room speakers.`
+      : '';
+    pushAudioMicSteps(steps, a, appleNote2);
+
+    // ── Assign screens ────────────────────────────────────────────────────────
+    steps.push({
+      title: 'Assign screens on the console',
+      body: `${highlight('images/console-home.png', 'Console home screen', [])}
+        Tap each screen button and set it to the correct source:<br><br>
+        ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On ${d1Roku ? 'Roku' : 'Clickshare'}`).join('<br>')}<br>
+        ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On ${d2Roku ? 'Roku' : 'Clickshare'}`).join('<br>')}<br><br>
+        If a screen briefly goes black after you tap, that is normal — give it a few seconds to switch.`
+    });
+
+    // ── Final check ───────────────────────────────────────────────────────────
+    steps.push({
+      title: 'Do a final check before your session begins',
+      body: `Walk up to each screen and confirm it is showing what you expect:<br><br>
+        ${[...(a.dev1Screens||[]), ...(a.dev2Screens||[])].map(s => {
+          const src = (a.dev1Screens||[]).includes(s) ? d1Name : d2Name;
+          return `✅ <strong>${screenLabel[s]||s}</strong> — ${src}`;
+        }).join('<br>')}<br><br>
+        If anything looks wrong, tap that screen's button on the console and re-select the correct source.<br><br>
+        If things get out of sync, tap <strong>All TV's → On PC</strong> to reset, then reassign one screen at a time.`
+    });
+
+    return steps;
+  }
+
+  // ── TROUBLESHOOTING STEP BUILDER ──────────────────────────────────────────
+  function buildTroubleshootSteps(a) {
+    const steps = [];
+    const t = a.troubleType;
+
+    // Golden rules appear on all paths
+    steps.push({
+      title: 'Golden Rule #1: Slow down — one command at a time',
+      body: `Every button press on the console or audio equipment sends a command that the system processes <strong>one at a time</strong>.<br><br>
+        If you press buttons too quickly, commands pile up, get confused, and the system falls out of sync.<br><br>
+        <strong>After each button press, pause and wait at least 30 seconds before pressing another.</strong>`
+    });
+
+    steps.push({
+      title: 'Golden Rule #2: When in doubt, return to the default state',
+      body: `The <strong>default state</strong> is: all TVs showing the Lectern PC, all external devices disconnected.<br><br>
+        To return to default:<br>
+        <ul style="margin:8px 0 0 18px;">
+          <li>On the console, tap <strong>All TV's → On PC</strong></li>
+          <li>Stop any AirPlay or Screen Mirroring from your personal device</li>
+          <li>Close or disconnect the ClickShare app if open</li>
+          <li>On the audio console, confirm the <strong>Class Rm button is white</strong></li>
+        </ul><br>
+        Once everything is back to default, add devices back <strong>one at a time</strong>, waiting 30 seconds between each step.`
+    });
+
+    if (t === 'reset') {
+      steps.push({
+        title: 'Verify the default state is restored',
+        body: `After resetting, confirm the following:<br><br>
+          ✅ All three TVs are showing the <strong>Lectern PC desktop</strong><br>
+          ✅ The Lectern Monitor is on and showing the PC<br>
+          ✅ The <strong>Class Rm button</strong> on the audio console is <strong>white</strong><br>
+          ✅ No personal devices are connected via ClickShare or Roku<br><br>
+          If everything looks good, you can now reconnect your devices one at a time, waiting 30 seconds between each step.`
+      });
+    }
+
+    if (t === 'tv') {
+      steps.push({
+        title: 'Try resetting the TV from the console first',
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap the button for the affected TV (Left TV, Main TV, or Right TV).<br><br>
+          Select <strong>Off</strong> from the menu. Wait 15 seconds, then tap the TV button again and select <strong>On PC</strong>.<br><br>
+          If the TV responds, you're done. If not, continue to the next step.`
+      });
+      steps.push({
+        title: 'Manually power-cycle the Left or Right TV',
+        body: `The <strong>Left TV</strong> and <strong>Right TV</strong> each have a physical power button on the TV itself.<br><br>
+          Press the power button to turn the TV <strong>off</strong>. Wait 10 seconds, then press it again to turn it back <strong>on</strong>.<br><br>
+          <strong>Note: The Main TV does not have a manual power button.</strong> It can only be controlled via the console. If the Main TV is unresponsive, proceed to the next step.`
+      });
+      steps.push({
+        title: 'If still unresponsive — text Carol or Ann',
+        body: `If the TV still won't respond after trying the console and the manual power button:<br><br>
+          📱 <strong>Text Carol or Ann</strong> for support.<br><br>
+          <strong>Important: Do not power down the A/V console or audio equipment, and do not unplug anything.</strong> Leave everything exactly as it is so the issue can be diagnosed. If vendor support is needed, they need to see the problem as-is.`
+      });
+    }
+
+    if (t === 'device') {
+      steps.push({
+        title: 'Check the console — is the correct input selected?',
+        body: `${highlight('images/console-home.png', 'Console home screen', [])}
+          On the console, tap the TV where your device should appear.<br><br>
+          Confirm the correct input is selected:<br>
+          <ul style="margin:8px 0 0 18px;">
+            <li>AirPlay / Roku device → <strong>On Roku</strong></li>
+            <li>ClickShare app or Button → <strong>On Clickshare</strong></li>
+            <li>Lectern PC → <strong>On PC</strong></li>
+            <li>Lectern Mac → <strong>On Mac</strong></li>
+          </ul><br>
+          If the wrong input is selected, tap the correct one and wait 15 seconds.`
+      });
+      steps.push({
+        title: 'Check your Wi-Fi connection (for ClickShare and Roku)',
+        body: `If you are casting wirelessly, confirm your device is connected to <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong>.<br><br>
+          <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0;">
+            <strong>📶 Wi-Fi:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> or <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
+            <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
+          </div>
+          If not connected, join the network and try reconnecting your device.`
+      });
+      steps.push({
+        title: 'Disconnect and reconnect your device',
+        body: `Try disconnecting completely and reconnecting:<br><br>
+          <strong>ClickShare:</strong> Close the app (or unplug the Button), wait 15 seconds, then reopen the app and reconnect.<br><br>
+          <strong>AirPlay / Screen Mirroring:</strong> Go to Control Center → Screen Mirroring → tap <strong>Roku Lectern</strong> to disconnect, wait 10 seconds, then tap it again to reconnect.<br><br>
+          If it still doesn't work, return everything to default (All TV's → On PC) and try the connection again from scratch.`
+      });
+    }
+
+    if (t === 'audio') {
+      steps.push({
+        title: 'Check the Class Rm button — it must be white',
+        body: `${highlight('images/audio-console.png', 'Audio console showing Class Rm button', [
+            {x: 77, y: 8, w: 8, h: 12, color: '#e94560'}
+          ])}
+          On the audio console, find the <strong>Class Rm button</strong> (highlighted above, far right).<br><br>
+          It must be <strong>white</strong>. If it is red or pink, press it once to unmute.<br><br>
+          This is the master gate for all room audio — if it is muted, nothing will be heard regardless of other settings.`
+      });
+      steps.push({
+        title: 'Check the specific audio channel for your source',
+        body: `Each audio source has its own channel button — it must also be <strong>white</strong>:<br><br>
+          <ul style="margin:8px 0 0 18px;">
+            <li><strong>Device audio</strong> (laptop/phone sound) → <strong>Audio</strong> channel (leftmost)</li>
+            <li><strong>Lectern Mic</strong> → <strong>Lectern</strong> channel (2nd from left)</li>
+            <li><strong>Handheld Mic</strong> → <strong>Wireless1</strong> channel (3rd from left)</li>
+            <li><strong>Clip-on Mic</strong> → <strong>Wireless2</strong> channel (4th from left)</li>
+          </ul><br>
+          Press the button for your source if it is red or pink.`
+      });
+      steps.push({
+        title: 'Check your device volume and mute status',
+        body: `If you are playing audio from a personal device:<br><br>
+          <ul style="margin:8px 0 0 18px;">
+            <li>Make sure your device is <strong>not muted</strong></li>
+            <li>Turn the device volume <strong>up slightly</strong> — even a small amount is enough, but zero will produce no sound</li>
+            <li><strong>Apple devices:</strong> the physical mute switch on the side must not be engaged</li>
+          </ul><br>
+          Then adjust the room volume using the <strong>Class Rm dial</strong> (the knob below the Class Rm button).`
+      });
+    }
+
+    if (t === 'stuck') {
+      steps.push({
+        title: 'Try manually power-cycling a TV if it is involved',
+        body: `The <strong>Left TV</strong> and <strong>Right TV</strong> have physical power buttons — press to turn off, wait 10 seconds, press again to turn on.<br><br>
+          <strong>The Main TV has no manual power button</strong> — it can only be controlled from the console.`
+      });
+      steps.push({
+        title: 'Reboot the Lectern Mac or PC if it is the problem',
+        body: `If the issue is with the <strong>Lectern PC or Mac</strong> itself, restart it.<br><br>
+          <strong>Do not leave it powered off</strong> — the Lectern PC and Mac must stay running for the room system to work correctly. Allow it to fully reboot before testing again.`
+      });
+    }
+
+    // Final escalation step on all paths
+    steps.push({
+      title: '⚠ Do NOT power down the console or audio equipment',
+      body: `Before contacting support, make sure you have <strong>not unplugged anything</strong> and have <strong>not powered down</strong> the A/V console or audio equipment.<br><br>
+        Leave everything exactly as it is. If vendor support is needed, they need to see the system in its current state to re-create and diagnose the problem.`
+    });
+
+    steps.push({
+      title: 'Text Carol or Ann for support',
+      body: `If the issue is still unresolved after trying the steps above:<br><br>
+        📱 <strong>Text Carol or Ann</strong> — they will assist directly or contact the vendor if needed.<br><br>
+        When you reach out, let them know:<br>
+        <ul style="margin:8px 0 0 18px;">
+          <li>Which TV or device is affected</li>
+          <li>What you were doing when the problem started</li>
+          <li>What steps you have already tried</li>
+        </ul>`
     });
 
     return steps;
