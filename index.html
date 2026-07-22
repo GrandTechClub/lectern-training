@@ -1062,7 +1062,10 @@
     }
   }
   document.getElementById('main-title').addEventListener('click', handleEasterEggTap);
-  document.querySelector('.logo-header img').addEventListener('click', handleEasterEggTap);
+  // Use touchend on the logo to prevent iOS from zooming on rapid taps
+  const logoImg = document.querySelector('.logo-header img');
+  logoImg.addEventListener('touchend', (e) => { e.preventDefault(); handleEasterEggTap(); });
+  logoImg.addEventListener('click', handleEasterEggTap);
 
   // Method 2: ?reflector URL parameter
   if (new URLSearchParams(window.location.search).has('reflector')) {
