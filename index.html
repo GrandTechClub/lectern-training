@@ -317,26 +317,6 @@
       </div>
     </div>
 
-    <!-- Q: Personal device audio -->
-    <div class="question hidden" id="q-audio">
-      <h2 id="q-audio-label">2. Will you be playing something with sound from your device?</h2>
-      <div class="options">
-        <button class="option-btn" data-q="audio" data-v="yes">Yes — I need the room speakers to play sound from my device</button>
-        <button class="option-btn" data-q="audio" data-v="no">No — I don't need any sound from my device</button>
-      </div>
-    </div>
-
-    <!-- Q: Personal device mic -->
-    <div class="question hidden" id="q-mic">
-      <h2>4. Which microphone do you need?</h2>
-      <div class="options">
-        <button class="option-btn" data-q="mic" data-v="none">No microphone today</button>
-        <button class="option-btn" data-q="mic" data-v="handfree">Hands-free clip-on microphone</button>
-        <button class="option-btn" data-q="mic" data-v="wireless">Handheld microphone</button>
-        <button class="option-btn" data-q="mic" data-v="lectern-mic">Lectern microphone</button>
-      </div>
-    </div>
-
     <!-- Q: How many devices (multi only) -->
     <div class="question hidden" id="q-multi-count">
       <h2>3. How many devices will be casting?</h2>
@@ -359,6 +339,8 @@
     <div class="question hidden" id="q-dev1-type">
       <h2 id="q-dev1-type-label">4. Device 1 — what type of device?</h2>
       <div class="options">
+        <button class="option-btn" data-q="dev1Type" data-v="lectern-pc">Lectern PC</button>
+        <button class="option-btn" data-q="dev1Type" data-v="lectern-mac">Lectern Mac</button>
         <button class="option-btn" data-q="dev1Type" data-v="pc">Windows laptop / PC</button>
         <button class="option-btn" data-q="dev1Type" data-v="mac">MacBook / Mac</button>
         <button class="option-btn" data-q="dev1Type" data-v="iphone">iPhone or iPad</button>
@@ -399,6 +381,8 @@
     <div class="question hidden" id="q-dev2-type">
       <h2>7. Device 2 — what type of device?</h2>
       <div class="options">
+        <button class="option-btn" data-q="dev2Type" data-v="lectern-pc">Lectern PC</button>
+        <button class="option-btn" data-q="dev2Type" data-v="lectern-mac">Lectern Mac</button>
         <button class="option-btn" data-q="dev2Type" data-v="pc">Windows laptop / PC</button>
         <button class="option-btn" data-q="dev2Type" data-v="mac">MacBook / Mac</button>
         <button class="option-btn" data-q="dev2Type" data-v="iphone">iPhone or iPad</button>
@@ -435,6 +419,26 @@
       </div>
     </div>
 
+    <!-- Q: Personal device audio -->
+    <div class="question hidden" id="q-audio">
+      <h2 id="q-audio-label">2. Will you be playing something with sound from your device?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="audio" data-v="yes">Yes — I need the room speakers to play sound from my device</button>
+        <button class="option-btn" data-q="audio" data-v="no">No — I don't need any sound from my device</button>
+      </div>
+    </div>
+
+    <!-- Q: Personal device mic -->
+    <div class="question hidden" id="q-mic">
+      <h2 id="q-mic-label">4. Which microphone do you need?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="mic" data-v="none">No microphone today</button>
+        <button class="option-btn" data-q="mic" data-v="handfree">Hands-free clip-on microphone</button>
+        <button class="option-btn" data-q="mic" data-v="wireless">Handheld microphone</button>
+        <button class="option-btn" data-q="mic" data-v="lectern-mic">Lectern microphone</button>
+      </div>
+    </div>
+
     <!-- placeholder kept for reset logic -->
     <div class="question hidden" id="q-multi-combo"></div>
     <div class="question hidden" id="q-multi-device2"></div>
@@ -448,6 +452,14 @@
         <button class="option-btn" data-q="troubleType" data-v="device">My device isn't showing up on the TVs</button>
         <button class="option-btn" data-q="troubleType" data-v="audio">Audio / sound isn't working</button>
         <button class="option-btn" data-q="troubleType" data-v="stuck">I've already tried the basics and I'm still stuck</button>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-audio-trouble-type">
+      <h2>3. Which type of audio isn't working?</h2>
+      <div class="options">
+        <button class="option-btn" data-q="audioTroubleType" data-v="mic">Microphone — the mic isn't being heard in the room</button>
+        <button class="option-btn" data-q="audioTroubleType" data-v="device">Device audio — sound from a laptop or phone isn't coming through the speakers</button>
       </div>
     </div>
 
@@ -519,8 +531,8 @@
 
     if (devicesComplete && !answers.audio) {
       document.getElementById('q-audio-label').textContent =
-        'Will any device be playing audio through the room speakers? (e.g. a YouTube video, music, or any device sound)';
-      showQuestion('q-audio');
+        '10. Will any device be playing audio through the room speakers? (e.g. a YouTube video, music, or any device sound)';
+      document.getElementById('q-audio').classList.remove('hidden');
     }
 
     const allComplete = devicesComplete && !!answers.audio && !!answers.mic;
@@ -638,11 +650,23 @@
         delete answers.audio; delete answers.mic;
         document.querySelectorAll('[data-q="dev1Screens"],[data-q="dev2Screens"]')
           .forEach(b => b.classList.remove('selected'));
-        // Re-enable all dev2Type buttons, then disable the one just chosen for dev1
+        // In 2-device flow: disable same device type for dev2 (same physical device).
+        // In 3-device flow: allow same type — two attendees can both have iPhones, etc.
         document.querySelectorAll('[data-q="dev2Type"]').forEach(b => { b.disabled = false; });
-        document.querySelector(`[data-q="dev2Type"][data-v="${v}"]`).disabled = true;
+        if (answers.multiCount !== '3') {
+          document.querySelector(`[data-q="dev2Type"][data-v="${v}"]`).disabled = true;
+        }
         document.getElementById('show-steps-btn').disabled = true;
-        showQuestion('q-dev1-method');
+        if (v === 'lectern-pc' || v === 'lectern-mac') {
+          answers.dev1Method = 'lectern';
+          // Lectern device skips method/CS-method questions — go straight to screen selection
+          // D2 method is NOT auto-assigned; D2 will show its own method question
+          delete answers.dev2Method;
+          document.getElementById('dev2-method-label').textContent = '';
+          showQuestion('q-dev1-screens');
+        } else {
+          showQuestion('q-dev1-method');
+        }
       } else if (q === 'dev1Method') {
         ['q-dev1-cs-method','q-dev1-screens','q-dev2-type','q-dev2-method','q-dev2-cs-method','q-dev2-screens','q-audio','q-mic']
           .forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -663,13 +687,20 @@
       } else if (q === 'dev1CsMethod') {
         showQuestion('q-dev1-screens');
       } else if (q === 'dev2Type') {
-        ['q-dev2-cs-method','q-dev2-screens','q-audio','q-mic']
+        ['q-dev2-method','q-dev2-cs-method','q-dev2-screens','q-audio','q-mic']
           .forEach(id => document.getElementById(id).classList.add('hidden'));
         delete answers.dev2CsMethod; answers.dev2Screens = [];
         delete answers.audio; delete answers.mic;
         document.querySelectorAll('[data-q="dev2Screens"]').forEach(b => b.classList.remove('selected'));
         document.getElementById('show-steps-btn').disabled = true;
-        if (needsCsMethod(v, answers.dev2Method)) {
+        if (v === 'lectern-pc' || v === 'lectern-mac') {
+          answers.dev2Method = 'lectern';
+          showQuestion('q-dev2-screens');
+          syncDev2Screens();
+        } else if (!answers.dev2Method) {
+          // D1 was a lectern device — D2 needs to pick its own cast method
+          showQuestion('q-dev2-method');
+        } else if (needsCsMethod(v, answers.dev2Method)) {
           showQuestion('q-dev2-cs-method');
         } else {
           showQuestion('q-dev2-screens');
@@ -679,14 +710,29 @@
         showQuestion('q-dev2-screens');
         syncDev2Screens();
       } else if (q === 'dev2Method') {
-        document.getElementById('q-dev2-screens').classList.add('hidden');
+        ['q-dev2-cs-method','q-dev2-screens'].forEach(id => document.getElementById(id).classList.add('hidden'));
         answers.dev2Screens = [];
         document.querySelectorAll('[data-q="dev2Screens"]').forEach(b => b.classList.remove('selected'));
         document.getElementById('show-steps-btn').disabled = true;
-        showQuestion('q-dev2-screens');
+        if (needsCsMethod(answers.dev2Type, v)) {
+          showQuestion('q-dev2-cs-method');
+        } else {
+          showQuestion('q-dev2-screens');
+          syncDev2Screens();
+        }
       } else if (q === 'multiDevice2') {
         document.getElementById('show-steps-btn').disabled = false;
       } else if (q === 'troubleType') {
+        document.getElementById('q-audio-trouble-type').classList.add('hidden');
+        delete answers.audioTroubleType;
+        document.querySelectorAll('[data-q="audioTroubleType"]').forEach(b => b.classList.remove('selected'));
+        if (v === 'audio') {
+          document.getElementById('show-steps-btn').disabled = true;
+          showQuestion('q-audio-trouble-type');
+        } else {
+          document.getElementById('show-steps-btn').disabled = false;
+        }
+      } else if (q === 'audioTroubleType') {
         document.getElementById('show-steps-btn').disabled = false;
       } else if (q === 'device') {
         ['q-cs-method','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
@@ -712,7 +758,12 @@
           `4. Will you be playing something with sound from your ${devName}? (e.g. a YouTube video, music, or any audio)`;
         showQuestion('q-audio');
       } else if (q === 'audio') {
-        showQuestion(isLectern ? 'q-mic-lectern' : 'q-mic');
+        if (answers.castingType === 'multi') {
+          document.getElementById('q-mic-label').textContent = '11. Which microphone do you need?';
+          document.getElementById('q-mic').classList.remove('hidden');
+        } else {
+          showQuestion(isLectern ? 'q-mic-lectern' : 'q-mic');
+        }
       }
 
       // Enable submit when audio + mic answered
@@ -989,10 +1040,12 @@
   document.getElementById('restart-btn').addEventListener('click', () => {
     Object.keys(answers).forEach(k => delete answers[k]);
     document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-    ['q-casting-type','q-multi-count','q-multi-combo','q-multi-device2',
-     'q-dev1-type','q-dev1-method','q-dev1-screens','q-dev2-type','q-dev2-method','q-dev2-screens',
-     'q-trouble-type','q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
+    ['q-casting-type','q-multi-count','q-lectern-type','q-multi-combo','q-multi-device2',
+     'q-dev1-type','q-dev1-method','q-dev1-cs-method','q-dev1-screens',
+     'q-dev2-type','q-dev2-method','q-dev2-cs-method','q-dev2-screens',
+     'q-cs-method','q-trouble-type','q-audio-trouble-type','q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
       document.getElementById(id).classList.add('hidden'));
+    document.querySelectorAll('[data-q="dev2Type"]').forEach(b => { b.disabled = false; });
     resetMultiDevAnswers();
     document.getElementById('show-steps-btn').disabled = true;
     document.getElementById('pdf-btn').classList.add('hidden');
@@ -1054,8 +1107,11 @@
     if (a.device === 'overview') return 'System Overview';
     if (a.device === 'shutdown') return 'Shutting down';
     if (a.device === 'troubleshoot') {
+      const audioSub = a.troubleType === 'audio'
+        ? (a.audioTroubleType === 'mic' ? 'Mic not working' : a.audioTroubleType === 'device' ? 'Device audio not working' : 'Audio not working')
+        : null;
       const t = { reset:'Reset / General', tv:'TV not responding', device:'Device not showing',
-        audio:'Audio not working', stuck:'Still stuck' }[a.troubleType] || 'Troubleshooting';
+        audio: audioSub || 'Audio not working', stuck:'Still stuck' }[a.troubleType] || 'Troubleshooting';
       return `Troubleshooting · ${t}`;
     }
     if (a.castingType === 'multi') {
@@ -1075,6 +1131,47 @@
     const mic = { none:'no mic', 'lectern-mic':'lectern mic', handfree:'clip-on mic',
       wireless:'wireless mic' }[a.mic] || a.mic;
     return `${device} · ${audio} · ${mic}`;
+  }
+
+  // ── CONSOLE ROOM CONFIG STEPS ────────────────────────────────────────────
+  // Pushes 5 individual steps for configuring a screen's source on the console.
+  // screenNames: array of display names e.g. ['Left TV', 'Right TV']
+  // source: 'Roku' | 'Clickshare 1' | 'Windows PC' | 'Mac Computer'
+  // deviceLabel: e.g. 'Device 1 (Mac)' shown in the first step title for context
+  function pushConsoleConfigSteps(steps, screenNames, source, deviceLabel) {
+    const screenList = screenNames.map(s => `<strong>${s}</strong>`).join(' and ');
+    const sourceDisplay = source === 'Roku' ? 'Roku (not Roku Apps)' : source;
+    const multiNote = screenNames.length > 1
+      ? `<br><br>You need to configure multiple screens. Repeat these steps for each one: ${screenList}.`
+      : '';
+    steps.push({
+      title: `${deviceLabel} — on the console, tap the 2nd icon on the left sidebar`,
+      body: `${highlight('images/room-config-1.png', 'Console home screen', [])}
+        You need to set ${screenList} to <strong>${source === 'Clickshare 1' ? 'ClickShare' : source}</strong>.<br><br>
+        On the console home screen, tap the <strong>2nd icon</strong> on the left sidebar.`
+    });
+    steps.push({
+      title: 'Tap the room name in the upper-left corner',
+      body: `${highlight('images/room-config-2.png', 'Room panel', [])}
+        Tap the room name shown in the <strong>upper-left corner</strong> (e.g. "Left TV >").<br><br>
+        It may show a different name depending on what was last used — that's OK, just tap it.`
+    });
+    steps.push({
+      title: `Select ${screenNames.join(' or ')} from the list`,
+      body: `${highlight('images/room-config-3.png', 'Rooms list', [])}
+        Tap ${screenList} from the Rooms list.`
+    });
+    steps.push({
+      title: 'Tap Watch',
+      body: `${highlight('images/room-config-4.png', 'Watch button', [])}
+        Tap <strong>Watch</strong>.`
+    });
+    steps.push({
+      title: `Tap ${sourceDisplay}`,
+      body: `${highlight('images/room-config-5.png', 'Watch sources', [])}
+        Tap <strong>${source}</strong>${source === 'Roku' ? ' — not Roku Apps' : ''}.<br><br>
+        The screen may briefly go black — that is normal.${multiNote}`
+    });
   }
 
   // ── IMAGE WITH SVG HIGHLIGHT OVERLAY ─────────────────────────────────────
@@ -1714,19 +1811,7 @@
 
     if (p1Roku) {
       const p1Screens = (a.dev1Screens||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(' and ');
-      steps.push({
-        title: `Set Personal Device 1 screens to Roku on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want ${p1Name} to appear on and switch it to <strong>On Roku</strong>:<br><br>
-          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal.`
-      });
-      steps.push({
-        title: 'Select your output screen on the Roku',
-        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
-          From the Rooms list, select: ${p1Screens || 'the screen you want to use'}.<br><br>
-          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens, pick one to start — you can switch rooms later.</em>`
-      });
+      pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel3[s]||s), 'Roku', p1Name);
       steps.push({
         title: `${p1Name} — check your Wi-Fi`,
         body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox3}`
@@ -1737,13 +1822,7 @@
       });
     }
     if (p1CS) {
-      steps.push({
-        title: `Set Personal Device 1 screens to ClickShare on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want ${p1Name} to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
-          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal.`
-      });
+      pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel3[s]||s), 'Clickshare 1', p1Name);
       steps.push({
         title: `${p1Name} — check your Wi-Fi`,
         body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox3}`
@@ -1757,19 +1836,7 @@
     // Steps for Personal Device 2
     if (p2Roku) {
       const p2Screens = (a.dev2Screens||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(' and ');
-      steps.push({
-        title: `Set Personal Device 2 screens to Roku on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want ${p2Name} to appear on and switch it to <strong>On Roku</strong>:<br><br>
-          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal.`
-      });
-      steps.push({
-        title: 'Select your output screen on the Roku',
-        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
-          From the Rooms list, select: ${p2Screens || 'the screen you want to use'}.<br><br>
-          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens, pick one to start — you can switch rooms later.</em>`
-      });
+      pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel3[s]||s), 'Roku', p2Name);
       steps.push({
         title: `${p2Name} — check your Wi-Fi`,
         body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox3}`
@@ -1780,13 +1847,7 @@
       });
     }
     if (p2CS) {
-      steps.push({
-        title: `Set Personal Device 2 screens to ClickShare on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want ${p2Name} to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
-          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel3[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal.`
-      });
+      pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel3[s]||s), 'Clickshare 1', p2Name);
       steps.push({
         title: `${p2Name} — check your Wi-Fi`,
         body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox3}`
@@ -1882,9 +1943,11 @@
   // ── 2-DEVICE STEP BUILDER ────────────────────────────────────────────────
   function build2DeviceSteps(a) {
     const steps = [];
-    const dLabel = { pc:'Windows PC / laptop', mac:'MacBook / Mac', iphone:'iPhone or iPad', android:'Android device' };
+    const dLabel = { 'lectern-pc':'Lectern PC', 'lectern-mac':'Lectern Mac', pc:'Windows PC / laptop', mac:'MacBook / Mac', iphone:'iPhone or iPad', android:'Android device' };
     const d1Name = dLabel[a.dev1Type] || 'Device 1';
     const d2Name = dLabel[a.dev2Type] || 'Device 2';
+    const d1Lectern = a.dev1Method === 'lectern';
+    const d2Lectern = a.dev2Method === 'lectern';
     const d1Roku = a.dev1Method === 'roku';
     const d2Roku = a.dev2Method === 'roku';
     const d1CS   = a.dev1Method === 'cs';
@@ -1946,12 +2009,12 @@
           </tr>
           <tr>
             <td style="padding:8px 10px;"><strong>${d1Name}</strong></td>
-            <td style="padding:8px 10px;">${d1Roku ? 'Roku' : 'ClickShare'}</td>
+            <td style="padding:8px 10px;">${d1Lectern ? 'Built-in (Lectern)' : d1Roku ? 'Roku' : 'ClickShare'}</td>
             <td style="padding:8px 10px;">${screenList(a.dev1Screens)}</td>
           </tr>
           <tr style="background:rgba(255,255,255,0.05);">
             <td style="padding:8px 10px;"><strong>${d2Name}</strong></td>
-            <td style="padding:8px 10px;">${d2Roku ? 'Roku' : 'ClickShare'}</td>
+            <td style="padding:8px 10px;">${d2Lectern ? 'Built-in (Lectern)' : d2Roku ? 'Roku' : 'ClickShare'}</td>
             <td style="padding:8px 10px;">${screenList(a.dev2Screens)}</td>
           </tr>
         </table><br>
@@ -1962,26 +2025,17 @@
     steps.push({
       title: 'Wake up the console and turn on all TVs',
       body: `${highlight('images/console-home.png', 'Console home screen', [])}
-        Tap the console to wake it up, then tap <strong>All TV's → On PC</strong> to power on all screens.<br><br>
+        Tap the console to wake it up, then tap <strong>All TV's → On ${d1Lectern && a.dev1Type === 'lectern-mac' ? 'Mac' : d2Lectern && a.dev2Type === 'lectern-mac' ? 'Mac' : 'PC'}</strong> to power on all screens.<br><br>
         You will reassign individual screens in a later step.`
     });
 
     // ── Steps for Device 1 ────────────────────────────────────────────────────
+    if (d1Lectern) {
+      const d1Src = a.dev1Type === 'lectern-mac' ? 'Mac Computer' : 'Windows PC';
+      pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel[s]||s), d1Src, `Device 1 (${d1Name})`);
+    }
     if (d1Roku) {
-      const d1RokuScreens = (a.dev1Screens || []).map(s => `<strong>${screenLabel[s]||s}</strong>`).join(' and ');
-      steps.push({
-        title: `Set Device 1 screens to Roku on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want Device 1 to appear on and switch it to <strong>On Roku</strong>:<br><br>
-          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal.`
-      });
-      steps.push({
-        title: 'Select your output screen on the Roku',
-        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
-          From the Rooms list, select: ${d1RokuScreens || 'the screen you want to use'}.<br><br>
-          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens above, pick one to start — you can switch rooms later.</em>`
-      });
+      pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel[s]||s), 'Roku', `Device 1 (${d1Name})`);
       steps.push({
         title: `Device 1 (${d1Name}) — check your Wi-Fi`,
         body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox}`
@@ -1992,13 +2046,7 @@
       });
     }
     if (d1CS) {
-      steps.push({
-        title: `Set Device 1 screens to ClickShare on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want Device 1 to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
-          ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal. Give it a few seconds before moving on.`
-      });
+      pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel[s]||s), 'Clickshare 1', `Device 1 (${d1Name})`);
       steps.push({
         title: `Device 1 (${d1Name}) — check your Wi-Fi`,
         body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox}`
@@ -2010,21 +2058,12 @@
     }
 
     // ── Steps for Device 2 ────────────────────────────────────────────────────
+    if (d2Lectern) {
+      const d2Src = a.dev2Type === 'lectern-mac' ? 'Mac Computer' : 'Windows PC';
+      pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel[s]||s), d2Src, `Device 2 (${d2Name})`);
+    }
     if (d2Roku) {
-      const d2RokuScreens = (a.dev2Screens || []).map(s => `<strong>${screenLabel[s]||s}</strong>`).join(' and ');
-      steps.push({
-        title: `Set Device 2 screens to Roku on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want Device 2 to appear on and switch it to <strong>On Roku</strong>:<br><br>
-          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Roku`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal.`
-      });
-      steps.push({
-        title: 'Select your output screen on the Roku',
-        body: `On the Roku home screen, tap the <strong>second icon — Rooms</strong>.<br><br>
-          From the Rooms list, select: ${d2RokuScreens || 'the screen you want to use'}.<br><br>
-          <em>The Roku can only be configured for one screen at a time. If you selected multiple screens above, pick one to start — you can switch rooms later.</em>`
-      });
+      pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel[s]||s), 'Roku', `Device 2 (${d2Name})`);
       steps.push({
         title: `Device 2 (${d2Name}) — check your Wi-Fi`,
         body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox}`
@@ -2035,13 +2074,7 @@
       });
     }
     if (d2CS) {
-      steps.push({
-        title: `Set Device 2 screens to ClickShare on the console`,
-        body: `${highlight('images/console-home.png', 'Console home screen', [])}
-          On the console, tap each screen you want Device 2 to appear on and switch it to <strong>On Clickshare</strong>:<br><br>
-          ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On Clickshare`).join('<br>')}<br><br>
-          The screen may briefly go black — that is normal. Give it a few seconds before moving on.`
-      });
+      pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel[s]||s), 'Clickshare 1', `Device 2 (${d2Name})`);
       steps.push({
         title: `Device 2 (${d2Name}) — check your Wi-Fi`,
         body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox}`
@@ -2063,8 +2096,8 @@
       title: 'Assign screens on the console',
       body: `${highlight('images/console-home.png', 'Console home screen', [])}
         Tap each screen button and set it to the correct source:<br><br>
-        ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On ${d1Roku ? 'Roku' : 'Clickshare'}`).join('<br>')}<br>
-        ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On ${d2Roku ? 'Roku' : 'Clickshare'}`).join('<br>')}<br><br>
+        ${(a.dev1Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On ${d1Lectern ? (a.dev1Type === 'lectern-mac' ? 'Mac Computer' : 'Windows PC') : d1Roku ? 'Roku' : 'Clickshare'}`).join('<br>')}<br>
+        ${(a.dev2Screens||[]).map(s => `• <strong>${screenLabel[s]||s}</strong> → On ${d2Lectern ? (a.dev2Type === 'lectern-mac' ? 'Mac Computer' : 'Windows PC') : d2Roku ? 'Roku' : 'Clickshare'}`).join('<br>')}<br><br>
         If a screen briefly goes black after you tap, that is normal — give it a few seconds to switch.`
     });
 
@@ -2077,7 +2110,7 @@
           return `✅ <strong>${screenLabel[s]||s}</strong> — ${src}`;
         }).join('<br>')}<br><br>
         If anything looks wrong, tap that screen's button on the console and re-select the correct source.<br><br>
-        If things get out of sync, tap <strong>All TV's → On PC</strong> to reset, then reassign one screen at a time.`
+        If things get out of sync, tap <strong>All TV's → On ${(d1Lectern && a.dev1Type === 'lectern-mac') || (d2Lectern && a.dev2Type === 'lectern-mac') ? 'Mac' : 'PC'}</strong> to reset, then reassign one screen at a time.`
     });
 
     return steps;
@@ -2088,15 +2121,16 @@
     const steps = [];
     const t = a.troubleType;
 
-    // Golden rules appear on all paths
-    steps.push({
+    // Golden rules appear on all paths except mic troubleshooting
+    const isMicTrouble = t === 'audio' && a.audioTroubleType === 'mic';
+    if (!isMicTrouble) steps.push({
       title: 'Golden Rule #1: Slow down — one command at a time',
       body: `Every button press on the console or audio equipment sends a command that the system processes <strong>one at a time</strong>.<br><br>
         If you press buttons too quickly, commands pile up, get confused, and the system falls out of sync.<br><br>
         <strong>After each button press, pause and wait at least 30 seconds before pressing another.</strong>`
     });
 
-    steps.push({
+    if (!isMicTrouble) steps.push({
       title: 'Golden Rule #2: When in doubt, return to the default state',
       body: `The <strong>default state</strong> is: all TVs showing the Lectern PC, all external devices disconnected.<br><br>
         To return to default:<br>
@@ -2175,36 +2209,76 @@
       });
     }
 
-    if (t === 'audio') {
+    if (t === 'audio' && a.audioTroubleType === 'mic') {
+      steps.push({
+        title: 'Check that the microphone itself is powered on',
+        body: `Before anything else, confirm the mic is actually on:<br><br>
+          <strong>Handheld mic (Wireless 1):</strong> Slide the power switch until the display lights up.<br><br>
+          <strong>Clip-on mic (Wireless 2):</strong> Press and hold the round power button until the green light turns on.<br><br>
+          <strong>Lectern mic:</strong> There is a power button at the base of the mic — press it and confirm the <strong>green light</strong> is on.`
+      });
+      steps.push({
+        title: 'Check the Class Rm button and your mic channel',
+        body: `${highlight('images/audio-console.png', 'Audio console showing Class Rm button', [
+            {x: 77, y: 8, w: 8, h: 12, color: '#e94560'}
+          ])}
+          On the audio console, check two things:<br><br>
+          1. The <strong>Class Rm button</strong> (far right, highlighted) must be <strong>white</strong>.<br><br>
+          2. The channel for your mic must also be <strong>white</strong>:<br>
+          <ul style="margin:8px 0 0 18px;">
+            <li><strong>Lectern Mic</strong> → <strong>Lectern</strong> channel (2nd from left)</li>
+            <li><strong>Handheld Mic</strong> → <strong>Wireless1</strong> channel (3rd from left)</li>
+            <li><strong>Clip-on Mic</strong> → <strong>Wireless2</strong> channel (4th from left)</li>
+          </ul><br>
+          If either button is pink or red, press it once to unmute it. Wait 5 seconds and test the mic.`
+      });
+      steps.push({
+        title: 'Still not working? Reset the audio console channels',
+        body: `${highlight('images/audio-console.png', 'Audio console', [
+            {x: 77, y: 8, w: 8, h: 12, color: '#e94560'}
+          ])}
+          Try a soft reset of the audio routing:<br><br>
+          1. Press the <strong>Class Rm button</strong> so it turns <strong>pink</strong> (everything muted).<br><br>
+          2. Wait 5 seconds.<br><br>
+          3. Press the <strong>Class Rm button</strong> again so it turns <strong>white</strong> (unmuted).<br><br>
+          4. Press the channel button for your mic (<strong>Lectern</strong>, <strong>Wireless1</strong>, or <strong>Wireless2</strong>) so it is also <strong>white</strong>.<br><br>
+          Wait 5 seconds and test the mic again.`
+      });
+      steps.push({
+        title: 'Last resort: tap the Master button',
+        body: `${highlight('images/master-button.png', 'Audio console Master button highlighted in red', [])}
+          If the mic is still silent after the steps above, try tapping the <strong>Master button</strong> (highlighted above, far right).<br><br>
+          The button will not change color — it will briefly <strong>flash green</strong> when pressed to confirm the press registered.<br><br>
+          Pause <strong>5 seconds</strong>, then press it once more. Test the mic after each press.<br><br>
+          <strong>⚠️ Do NOT power the audio console off or on</strong> — this requires a full vendor-assisted recalibration and will take the room out of service.`
+      });
+    }
+
+    if (t === 'audio' && a.audioTroubleType === 'device') {
       steps.push({
         title: 'Check the Class Rm button — it must be white',
         body: `${highlight('images/audio-console.png', 'Audio console showing Class Rm button', [
             {x: 77, y: 8, w: 8, h: 12, color: '#e94560'}
           ])}
-          On the audio console, find the <strong>Class Rm button</strong> (highlighted above, far right).<br><br>
-          It must be <strong>white</strong>. If it is red or pink, press it once to unmute.<br><br>
-          This is the master gate for all room audio — if it is muted, nothing will be heard regardless of other settings.`
+          On the audio console, find the <strong>Class Rm button</strong> (far right, highlighted).<br><br>
+          It must be <strong>white</strong>. If it is pink or red, press it once to unmute.<br><br>
+          This is the master gate for all room audio — if it is muted, no sound will come through regardless of other settings.`
       });
       steps.push({
-        title: 'Check the specific audio channel for your source',
-        body: `Each audio source has its own channel button — it must also be <strong>white</strong>:<br><br>
-          <ul style="margin:8px 0 0 18px;">
-            <li><strong>Device audio</strong> (laptop/phone sound) → <strong>Audio</strong> channel (leftmost)</li>
-            <li><strong>Lectern Mic</strong> → <strong>Lectern</strong> channel (2nd from left)</li>
-            <li><strong>Handheld Mic</strong> → <strong>Wireless1</strong> channel (3rd from left)</li>
-            <li><strong>Clip-on Mic</strong> → <strong>Wireless2</strong> channel (4th from left)</li>
-          </ul><br>
-          Press the button for your source if it is red or pink.`
+        title: 'Check the Audio channel button',
+        body: `Find the <strong>Audio</strong> channel button (leftmost button on the audio console).<br><br>
+          It must also be <strong>white</strong>. If it is pink or red, press it once to unmute.<br><br>
+          This is the channel that carries device audio (laptop, phone, tablet) through the room speakers.`
       });
       steps.push({
         title: 'Check your device volume and mute status',
-        body: `If you are playing audio from a personal device:<br><br>
+        body: `On your device:<br><br>
           <ul style="margin:8px 0 0 18px;">
-            <li>Make sure your device is <strong>not muted</strong></li>
-            <li>Turn the device volume <strong>up slightly</strong> — even a small amount is enough, but zero will produce no sound</li>
-            <li><strong>Apple devices:</strong> the physical mute switch on the side must not be engaged</li>
+            <li>Make sure the device is <strong>not muted</strong></li>
+            <li>Turn the volume <strong>up</strong> — even a small amount is needed; zero produces no sound</li>
+            <li><strong>Apple devices:</strong> the physical mute switch on the side of the device must not be engaged</li>
           </ul><br>
-          Then adjust the room volume using the <strong>Class Rm dial</strong> (the knob below the Class Rm button).`
+          Then adjust the overall room volume using the <strong>Class Rm dial</strong> (the knob below the Class Rm button).`
       });
     }
 
@@ -2221,8 +2295,8 @@
       });
     }
 
-    // Final escalation step on all paths
-    steps.push({
+    // Final escalation step on all paths except mic (already covered in Master button step)
+    if (!isMicTrouble) steps.push({
       title: '⚠ Do NOT power down the console or audio equipment',
       body: `Before contacting support, make sure you have <strong>not unplugged anything</strong> and have <strong>not powered down</strong> the A/V console or audio equipment.<br><br>
         Leave everything exactly as it is. If vendor support is needed, they need to see the system in its current state to re-create and diagnose the problem.`
