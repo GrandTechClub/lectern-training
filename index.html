@@ -252,7 +252,7 @@
     <div class="logo-header">
       <img src="images/GTC-logo.png" alt="Grand Tech Club">
     </div>
-    <h1>Tech Club A/V Setup Guide</h1>
+    <h1 id="main-title">Tech Club A/V Setup Guide</h1>
     <p class="subtitle">Use this guide every time you use the lectern. Select what you'd like to do today.</p>
 
     <div class="question" id="q-mode">
@@ -262,6 +262,10 @@
         <button class="option-btn" data-q="mode" data-v="setup">I'm ready to present — walk me through the setup</button>
         <button class="option-btn" data-q="mode" data-v="troubleshoot">Troubleshooting — something isn't working</button>
         <button class="option-btn" data-q="mode" data-v="shutdown">I'm done presenting — help me shut everything down</button>
+        <button class="option-btn hidden" id="reflector-btn" data-q="mode" data-v="reflector"
+          style="border-color:#7a5c9a; background:rgba(122,92,154,0.12); color:#7a5c9a;">
+          ✦ Reflector 4K — cast multiple devices to one screen
+        </button>
       </div>
     </div>
 
@@ -447,10 +451,10 @@
     <div class="question hidden" id="q-trouble-type">
       <h2>2. What seems to be the problem?</h2>
       <div class="options">
-        <button class="option-btn" data-q="troubleType" data-v="reset">Nothing is working right — I need to reset everything</button>
-        <button class="option-btn" data-q="troubleType" data-v="tv">A TV won't turn on, turn off, or respond</button>
+<button class="option-btn" data-q="troubleType" data-v="tv">A TV won't turn on, turn off, or respond</button>
         <button class="option-btn" data-q="troubleType" data-v="device">My device isn't showing up on the TVs</button>
         <button class="option-btn" data-q="troubleType" data-v="audio">Audio / sound isn't working</button>
+        <button class="option-btn" data-q="troubleType" data-v="appblack">A specific app shows a black screen or has no audio (e.g. YouTube, Google Photos, Netflix)</button>
         <button class="option-btn" data-q="troubleType" data-v="stuck">I've already tried the basics and I'm still stuck</button>
       </div>
     </div>
@@ -609,6 +613,9 @@
         } else if (v === 'troubleshoot') {
           answers.device = 'troubleshoot';
           showQuestion('q-trouble-type');
+        } else if (v === 'reflector') {
+          answers.device = 'reflector';
+          document.getElementById('show-steps-btn').disabled = false;
         } else {
           answers.device = v;
           document.getElementById('show-steps-btn').disabled = false;
@@ -1037,6 +1044,31 @@
     }
   });
 
+  // ── EASTER EGG: unlock Reflector 4K option ────────────────────────────────
+  function unlockReflector() {
+    document.getElementById('reflector-btn').classList.remove('hidden');
+  }
+
+  // Method 1: triple-tap the page title or logo
+  let titleTapCount = 0, titleTapTimer;
+  function handleEasterEggTap() {
+    titleTapCount++;
+    clearTimeout(titleTapTimer);
+    if (titleTapCount >= 3) {
+      titleTapCount = 0;
+      unlockReflector();
+    } else {
+      titleTapTimer = setTimeout(() => { titleTapCount = 0; }, 600);
+    }
+  }
+  document.getElementById('main-title').addEventListener('click', handleEasterEggTap);
+  document.querySelector('.logo-header img').addEventListener('click', handleEasterEggTap);
+
+  // Method 2: ?reflector URL parameter
+  if (new URLSearchParams(window.location.search).has('reflector')) {
+    unlockReflector();
+  }
+
   document.getElementById('restart-btn').addEventListener('click', () => {
     Object.keys(answers).forEach(k => delete answers[k]);
     document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
@@ -1106,12 +1138,13 @@
   function describeScenario(a) {
     if (a.device === 'overview') return 'System Overview';
     if (a.device === 'shutdown') return 'Shutting down';
+    if (a.device === 'reflector') return 'Reflector 4K — Multi-device';
     if (a.device === 'troubleshoot') {
       const audioSub = a.troubleType === 'audio'
         ? (a.audioTroubleType === 'mic' ? 'Mic not working' : a.audioTroubleType === 'device' ? 'Device audio not working' : 'Audio not working')
         : null;
       const t = { reset:'Reset / General', tv:'TV not responding', device:'Device not showing',
-        audio: audioSub || 'Audio not working', stuck:'Still stuck' }[a.troubleType] || 'Troubleshooting';
+        audio: audioSub || 'Audio not working', appblack:'App black screen / no audio', stuck:'Still stuck' }[a.troubleType] || 'Troubleshooting';
       return `Troubleshooting · ${t}`;
     }
     if (a.castingType === 'multi') {
@@ -1203,6 +1236,7 @@
   // ── STEP BUILDER ──────────────────────────────────────────────────────────
   function buildSteps(a) {
     if (a.device === 'troubleshoot') return buildTroubleshootSteps(a);
+    if (a.device === 'reflector') return buildReflectorSteps(a);
     if (a.castingType === 'multi') return buildMultiSteps(a);
 
     const steps = [];
@@ -2116,6 +2150,54 @@
     return steps;
   }
 
+  // ── REFLECTOR 4K STEP BUILDER ─────────────────────────────────────────────
+  function buildReflectorSteps(a) {
+    const steps = [];
+    const aztecBox = `<div style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
+      <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AZTEC</span><br>
+      <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">aztec4680</span>
+    </div>`;
+
+    steps.push({
+      title: '⚠️ Heads up — Reflector 4K is a legacy solution',
+      body: `Reflector 4K runs on the <strong>Lectern PC</strong> and lets you cast multiple devices to the same screen simultaneously — something the standard ClickShare setup does not support.<br><br>
+        However, this is <strong>not an actively maintained solution</strong>. The app and the AZTEC Wi-Fi network it depends on may go down without warning.<br><br>
+        <strong>Backup plan:</strong> If Reflector isn't working, switch to the standard 2-device setup using Roku and ClickShare — that solution is fully supported. Use the <em>← Start over / change answers</em> button to go back and select that path.`
+    });
+
+    steps.push({
+      title: 'Step 1 — Connect all devices to AZTEC Wi-Fi',
+      body: `Every device you want to cast <strong>must be on the AZTEC network</strong> — not AV-GTC-5 or AV-GTC-2.<br><br>
+        ${aztecBox}
+        Connect each device to AZTEC before continuing.`
+    });
+
+    steps.push({
+      title: 'Step 2 — Open Reflector 4K on the Lectern PC',
+      body: `On the <strong>Lectern PC</strong>, find the <strong>Reflector 4K</strong> icon on the desktop or taskbar and open it.<br><br>
+        The app will start listening for incoming cast connections. Leave it running in the background — you do not need to do anything else on the PC side.`
+    });
+
+    steps.push({
+      title: 'Step 3 — Cast from your device',
+      body: `On each device you want to cast, start a screen mirror or AirPlay session and select <strong>LECTERN-WINDOWS</strong> from the list.<br><br>
+        <strong>Android devices:</strong> Will connect without a password.<br><br>
+        <strong>Apple devices (iPhone, iPad, MacBook):</strong> A passcode will appear on the screen after a few seconds — enter it on your device to complete the connection.<br><br>
+        Repeat for each device you want to show.`
+    });
+
+    steps.push({
+      title: 'If Reflector is not working — switch to the standard setup',
+      body: `If the app won't open, devices can't find it, or the AZTEC network is unavailable:<br><br>
+        1. Tap <strong>← Start over / change answers</strong> below.<br>
+        2. Choose <strong>Multiple devices</strong> → <strong>2 devices</strong>.<br>
+        3. Use <strong>Roku</strong> for one device and <strong>ClickShare</strong> for the other — this is the fully supported alternative.<br><br>
+        Note that with the standard setup, each device will display on its own assigned TV rather than sharing a single screen.`
+    });
+
+    return steps;
+  }
+
   // ── TROUBLESHOOTING STEP BUILDER ──────────────────────────────────────────
   function buildTroubleshootSteps(a) {
     const steps = [];
@@ -2279,6 +2361,35 @@
             <li><strong>Apple devices:</strong> the physical mute switch on the side of the device must not be engaged</li>
           </ul><br>
           Then adjust the overall room volume using the <strong>Class Rm dial</strong> (the knob below the Class Rm button).`
+      });
+    }
+
+    if (t === 'appblack') {
+      steps.push({
+        title: 'Why this happens',
+        body: `Some apps — including <strong>YouTube, Google Photos, Netflix, Disney+</strong>, and other streaming or DRM-protected apps — use a special rendering method that bypasses normal screen capture.<br><br>
+          When you cast via Roku (AirPlay / Screen Mirroring) or ClickShare, those methods capture the standard screen layer. Apps that render outside that layer will show a <strong>black screen or produce no audio</strong> on the TVs even though everything looks fine on your device.<br><br>
+          This is a limitation of how those apps are built — it is not a problem with the room's A/V setup.`
+      });
+      steps.push({
+        title: 'Try the browser version of the app first',
+        body: `Instead of using the native app on your device, open the content in a <strong>web browser</strong> (Safari or Chrome):<br><br>
+          <ul style="margin:8px 0 0 18px;">
+            <li><strong>Google Photos</strong> → go to <span style="font-family:monospace;">photos.google.com</span> in your browser</li>
+            <li><strong>YouTube</strong> → go to <span style="font-family:monospace;">youtube.com</span> in your browser</li>
+            <li><strong>Other streaming apps</strong> → look for a web version at the service's website</li>
+          </ul><br>
+          Browser-rendered content typically mirrors correctly through both Roku and ClickShare. Test by playing the content with your cast already active.`
+      });
+      steps.push({
+        title: 'If the browser workaround does not help — use the Lectern PC or Mac',
+        body: `Some content simply cannot be cast from a personal device due to DRM (copy protection) restrictions — no workaround exists for those cases.<br><br>
+          The best alternative is to <strong>use the Lectern PC or Mac</strong> instead:<br><br>
+          <ul style="margin:8px 0 0 18px;">
+            <li>Log in to the app or website directly on the Lectern PC or Mac</li>
+            <li>All TVs already display the Lectern PC/Mac by default — no casting needed</li>
+            <li>This is the most reliable option for video playback and will always work</li>
+          </ul>`
       });
     }
 
