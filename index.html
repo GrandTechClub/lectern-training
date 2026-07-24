@@ -1794,8 +1794,8 @@
         The steps below will walk you through setting up each device and assigning your screens.`
     });
 
-    // Step 1b: Wi-Fi for personal devices
-    if (p1Roku || p1CS || p2Roku || p2CS) {
+    // Step 1b: Wi-Fi for personal devices (not needed for ClickShare Button)
+    if (p1Roku || (p1CS && a.dev1CsMethod !== 'button') || p2Roku || (p2CS && a.dev2CsMethod !== 'button')) {
       steps.push({
         title: 'Make sure your personal devices are connected to the Tech Club AV Wi-Fi',
         body: `Any device casting via Roku or ClickShare must be on the GTC network before you begin:<br><br>${wifiBox3}
@@ -2051,8 +2051,8 @@
         The steps below will walk you through connecting each device and assigning your screens.`
     });
 
-    // ── Step 1b: Wi-Fi for personal devices ─────────────────────────────────────
-    if (d1Roku || d1CS || d2Roku || d2CS) {
+    // ── Step 1b: Wi-Fi for personal devices (not needed for ClickShare Button) ──
+    if (d1Roku || (d1CS && a.dev1CsMethod !== 'button') || d2Roku || (d2CS && a.dev2CsMethod !== 'button')) {
       steps.push({
         title: 'Make sure your personal devices are connected to the Tech Club AV Wi-Fi',
         body: `Any device casting via Roku or ClickShare must be on the GTC network before you begin:<br><br>${wifiBox}
