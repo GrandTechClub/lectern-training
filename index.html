@@ -451,7 +451,7 @@
     <div class="question hidden" id="q-trouble-type">
       <h2>2. What seems to be the problem?</h2>
       <div class="options">
-<button class="option-btn" data-q="troubleType" data-v="tv">A TV won't turn on, turn off, or respond</button>
+<button class="option-btn" data-q="troubleType" data-v="tv">An individual TV won't turn on, off or respond</button>
         <button class="option-btn" data-q="troubleType" data-v="device">My device isn't showing up on the TVs</button>
         <button class="option-btn" data-q="troubleType" data-v="audio">Audio / sound isn't working</button>
         <button class="option-btn" data-q="troubleType" data-v="appblack">A specific app shows a black screen or has no audio (e.g. YouTube, Google Photos, Netflix)</button>
@@ -1306,7 +1306,7 @@
           Once you are comfortable with that setup, try connecting your own laptop or mobile device.<br><br>
           <strong>If you plan to connect your own device</strong>, you'll need to be on the Tech Club AV Wi-Fi:<br>
           <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem;">
-            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
+            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span><br>
             <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
           </div>
           When you are ready, click the <strong>"← Start Over / Change Answers"</strong> button below to go back and select <strong>"I am ready to present"</strong> for your personalized step-by-step guide.`
@@ -1371,6 +1371,15 @@
             Once the LED is solid white, you are ready for the next step.`
         });
       } else {
+        steps.push({
+          title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
+          body: `ClickShare requires your device to be on the GTC network.<br><br>
+            <div class="wifi-callout" style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
+              <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span><br>
+              <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
+            </div>
+            Already connected? Hit Next Step.`
+        });
         if (csMethod === 'app-install') {
           steps.push(isWindows ? {
             title: 'Install the ClickShare app on your Windows laptop',
@@ -1388,39 +1397,30 @@
               Once downloaded, open the .dmg file and follow the installation prompts, then come back and hit Next Step.`
           });
         }
-        steps.push({
-          title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
-          body: `The ClickShare app requires your laptop to be on the GTC network.<br><br>
-            <div class="wifi-callout" style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
-              <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
-              <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
-            </div>
-            Already connected? Hit Next Step.`
-        });
       }
     } else if (a.device === 'android') {
+      steps.push({
+        title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
+        body: `You need to be on <strong>AV-GTC-5</strong> for ClickShare to work.<br><br>
+          <div class="wifi-callout" style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
+            <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span><br>
+            <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
+          </div>
+          Already connected? Hit Next Step.`
+      });
       steps.push({
         title: 'Install the ClickShare app on your Android device',
         body: `${highlight('images/android-playstore.png', 'ClickShare app listing in the Google Play Store', [], 60)}
           Download it from the <strong>Google Play Store</strong> (search "ClickShare", shown above) — other sources may cause issues.<br><br>
           Once installed, come back and hit Next Step.`
       });
-      steps.push({
-        title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
-        body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for ClickShare to work.<br><br>
-          <div class="wifi-callout" style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
-            <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
-            <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
-          </div>
-          Already connected? Hit Next Step.`
-      });
     } else if (a.device === 'iphone' || a.device === 'mac') {
       steps.push({
         title: 'Make sure your device is connected to the Tech Club AV Wi-Fi',
-        body: `You need to be on <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> for screen mirroring to work.<br><br>
-          Check your Wi-Fi connection now. If you are not connected, join one of those networks.<br><br>
+        body: `You need to be on <strong>AV-GTC-5</strong> for screen mirroring to work.<br><br>
+          Check your Wi-Fi connection now. If you are not connected, join that network.<br><br>
           <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem;">
-            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
+            <strong>📶 Wi-Fi Network:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span><br>
             <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
           </div>
           Already connected? Hit Next Step.`
@@ -1761,7 +1761,7 @@
       return (arr||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(', ');
     }
     const wifiBox3 = `<div style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
-      <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
+      <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span><br>
       <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
     </div>`;
 
@@ -1793,6 +1793,15 @@
         </table><br>
         The steps below will walk you through setting up each device and assigning your screens.`
     });
+
+    // Step 1b: Wi-Fi for personal devices
+    if (p1Roku || p1CS || p2Roku || p2CS) {
+      steps.push({
+        title: 'Make sure your personal devices are connected to the Tech Club AV Wi-Fi',
+        body: `Any device casting via Roku or ClickShare must be on the GTC network before you begin:<br><br>${wifiBox3}
+          Already connected? Hit Next Step.`
+      });
+    }
 
     // Step 2: Turn on TVs
     steps.push({
@@ -1850,20 +1859,12 @@
       const p1Screens = (a.dev1Screens||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(' and ');
       pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel3[s]||s), 'Roku', p1Name);
       steps.push({
-        title: `${p1Name} — check your Wi-Fi`,
-        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox3}`
-      });
-      steps.push({
         title: `${p1Name} — cast your screen via Roku`,
         body: castRokuInstructions3(a.dev1Type)
       });
     }
     if (p1CS) {
       pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel3[s]||s), 'Clickshare 1', p1Name);
-      steps.push({
-        title: `${p1Name} — check your Wi-Fi`,
-        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox3}`
-      });
       steps.push({
         title: `${p1Name} — connect via ClickShare`,
         body: connectCS3(p1Name, a.dev1Type, a.dev1CsMethod)
@@ -1875,20 +1876,12 @@
       const p2Screens = (a.dev2Screens||[]).map(s => `<strong>${screenLabel3[s]||s}</strong>`).join(' and ');
       pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel3[s]||s), 'Roku', p2Name);
       steps.push({
-        title: `${p2Name} — check your Wi-Fi`,
-        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox3}`
-      });
-      steps.push({
         title: `${p2Name} — cast your screen via Roku`,
         body: castRokuInstructions3(a.dev2Type)
       });
     }
     if (p2CS) {
       pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel3[s]||s), 'Clickshare 1', p2Name);
-      steps.push({
-        title: `${p2Name} — check your Wi-Fi`,
-        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox3}`
-      });
       steps.push({
         title: `${p2Name} — connect via ClickShare`,
         body: connectCS3(p2Name, a.dev2Type, a.dev2CsMethod)
@@ -1997,7 +1990,7 @@
       return (arr||[]).map(s => `<strong>${screenLabel[s]||s}</strong>`).join(', ');
     }
     const wifiBox = `<div style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin:10px 0; font-size:1rem; color:#1a1a1a;">
-        <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span> &nbsp;or&nbsp; <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-2</span><br>
+        <strong style="color:#1a1a1a;">📶 Wi-Fi network:</strong> <span style="font-family:monospace; font-size:1.15rem; font-weight:700; color:#1a1a1a;">AV-GTC-5</span><br>
         <strong style="color:#1a1a1a;">🔑 Password:</strong> <span style="font-family:monospace; font-size:1.4rem; font-weight:700; letter-spacing:0.08em; color:#1a1a1a; background:#c8e6c9; padding:2px 10px; border-radius:6px;">Tech1998!</span>
       </div>`;
 
@@ -2058,6 +2051,15 @@
         The steps below will walk you through connecting each device and assigning your screens.`
     });
 
+    // ── Step 1b: Wi-Fi for personal devices ─────────────────────────────────────
+    if (d1Roku || d1CS || d2Roku || d2CS) {
+      steps.push({
+        title: 'Make sure your personal devices are connected to the Tech Club AV Wi-Fi',
+        body: `Any device casting via Roku or ClickShare must be on the GTC network before you begin:<br><br>${wifiBox}
+          Already connected? Hit Next Step.`
+      });
+    }
+
     // ── Step 2: Turn on TVs ───────────────────────────────────────────────────
     steps.push({
       title: 'Wake up the console and turn on all TVs',
@@ -2074,20 +2076,12 @@
     if (d1Roku) {
       pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel[s]||s), 'Roku', `Device 1 (${d1Name})`);
       steps.push({
-        title: `Device 1 (${d1Name}) — check your Wi-Fi`,
-        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox}`
-      });
-      steps.push({
         title: `Device 1 (${d1Name}) — cast your screen via Roku`,
         body: castRokuInstructions(a.dev1Type)
       });
     }
     if (d1CS) {
       pushConsoleConfigSteps(steps, (a.dev1Screens||[]).map(s => screenLabel[s]||s), 'Clickshare 1', `Device 1 (${d1Name})`);
-      steps.push({
-        title: `Device 1 (${d1Name}) — check your Wi-Fi`,
-        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox}`
-      });
       steps.push({
         title: `Device 1 (${d1Name}) — connect via ClickShare`,
         body: connectCS(d1Name, a.dev1Type, a.dev1CsMethod)
@@ -2102,20 +2096,12 @@
     if (d2Roku) {
       pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel[s]||s), 'Roku', `Device 2 (${d2Name})`);
       steps.push({
-        title: `Device 2 (${d2Name}) — check your Wi-Fi`,
-        body: `Before casting via Roku, make sure your device is on the GTC network:<br><br>${wifiBox}`
-      });
-      steps.push({
         title: `Device 2 (${d2Name}) — cast your screen via Roku`,
         body: castRokuInstructions(a.dev2Type)
       });
     }
     if (d2CS) {
       pushConsoleConfigSteps(steps, (a.dev2Screens||[]).map(s => screenLabel[s]||s), 'Clickshare 1', `Device 2 (${d2Name})`);
-      steps.push({
-        title: `Device 2 (${d2Name}) — check your Wi-Fi`,
-        body: `ClickShare requires your device to be on the GTC network:<br><br>${wifiBox}`
-      });
       steps.push({
         title: `Device 2 (${d2Name}) — connect via ClickShare`,
         body: connectCS(d2Name, a.dev2Type, a.dev2CsMethod)
@@ -2170,7 +2156,7 @@
 
     steps.push({
       title: 'Step 1 — Connect all devices to AZTEC Wi-Fi',
-      body: `Every device you want to cast <strong>must be on the AZTEC network</strong> — not AV-GTC-5 or AV-GTC-2.<br><br>
+      body: `Every device you want to cast <strong>must be on the AZTEC network</strong> — not AV-GTC-5.<br><br>
         ${aztecBox}
         Connect each device to AZTEC before continuing.`
     });
@@ -2212,7 +2198,7 @@
       title: 'Golden Rule #1: Slow down — one command at a time',
       body: `Every button press on the console or audio equipment sends a command that the system processes <strong>one at a time</strong>.<br><br>
         If you press buttons too quickly, commands pile up, get confused, and the system falls out of sync.<br><br>
-        <strong>After each button press, pause and wait at least 30 seconds before pressing another.</strong>`
+        <strong>After each button press, pause and wait at least 10 seconds before pressing another.</strong>`
     });
 
     if (!isMicTrouble) steps.push({
@@ -2225,7 +2211,7 @@
           <li>Close or disconnect the ClickShare app if open</li>
           <li>On the audio console, confirm the <strong>Class Rm button is white</strong></li>
         </ul><br>
-        Once everything is back to default, add devices back <strong>one at a time</strong>, waiting 30 seconds between each step.`
+        Once everything is back to default, add devices back <strong>one at a time</strong>, waiting 10 seconds between each step.`
     });
 
     if (t === 'reset') {
@@ -2236,7 +2222,7 @@
           ✅ The Lectern Monitor is on and showing the PC<br>
           ✅ The <strong>Class Rm button</strong> on the audio console is <strong>white</strong><br>
           ✅ No personal devices are connected via ClickShare or Roku<br><br>
-          If everything looks good, you can now reconnect your devices one at a time, waiting 30 seconds between each step.`
+          If everything looks good, you can now reconnect your devices one at a time, waiting 10 seconds between each step.`
       });
     }
 
@@ -2247,6 +2233,16 @@
           On the console, tap the button for the affected TV (Left TV, Main TV, or Right TV).<br><br>
           Select <strong>Off</strong> from the menu. Wait 15 seconds, then tap the TV button again and select <strong>On PC</strong>.<br><br>
           If the TV responds, you're done. If not, continue to the next step.`
+      });
+      steps.push({
+        title: 'Try switching the TV to a different input via the room config',
+        body: `${highlight('images/room-config-1.png', 'Console home screen — 2nd icon on left sidebar', [])}
+          Sometimes a TV will respond to a different input even when it appears stuck. Try switching it to <strong>Roku</strong> using the room config steps:<br><br>
+          1. On the console home screen, tap the <strong>2nd icon</strong> on the left sidebar.<br>
+          2. Tap the room name in the <strong>upper-left corner</strong> (e.g. "Left TV >").<br>
+          3. Select the <strong>TV that isn't responding</strong> from the list.<br>
+          4. Tap <strong>Watch</strong>, then tap <strong>Roku</strong> (not Roku Apps).<br><br>
+          Wait 10 seconds. If the TV wakes up and responds, it's working — switch it back to <strong>Windows PC</strong> (or whichever source you were using) using the same steps.`
       });
       steps.push({
         title: 'Manually power-cycle the Left or Right TV',
@@ -2282,9 +2278,9 @@
       });
       steps.push({
         title: 'Check your Wi-Fi connection (for ClickShare and Roku)',
-        body: `If you are casting wirelessly, confirm your device is connected to <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong>.<br><br>
+        body: `If you are casting wirelessly, confirm your device is connected to <strong>AV-GTC-5</strong>.<br><br>
           <div class="wifi-callout" style="background:#fff8e1; border:2px solid #f9a825; border-radius:10px; padding:14px 18px; margin:10px 0;">
-            <strong>📶 Wi-Fi:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span> or <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-2</span><br>
+            <strong>📶 Wi-Fi:</strong> <span style="font-family:monospace; font-size:1.2rem; font-weight:700;">AV-GTC-5</span><br>
             <strong>🔑 Password:</strong> <span class="wifi-password" style="font-family:monospace; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; background:#ffe0e0; padding:2px 10px; border-radius:6px;">Tech1998!</span>
           </div>
           If not connected, join the network and try reconnecting your device.`
@@ -2420,7 +2416,7 @@
         Leave everything exactly as it is. If vendor support is needed, they need to see the system in its current state to re-create and diagnose the problem.`
     });
 
-    steps.push({
+    if (t !== 'tv') steps.push({
       title: 'Text Carol or Ann for support',
       body: `If the issue is still unresolved after trying the steps above:<br><br>
         📱 <strong>Text only — do not call</strong><br>
