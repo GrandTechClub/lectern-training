@@ -262,8 +262,25 @@
         <button class="option-btn" data-q="mode" data-v="setup">I'm ready to present — walk me through the setup</button>
         <button class="option-btn" data-q="mode" data-v="troubleshoot">Troubleshooting — something isn't working</button>
         <button class="option-btn" data-q="mode" data-v="shutdown">I'm done presenting — help me shut everything down</button>
-        <button class="option-btn hidden" id="reflector-btn" data-q="mode" data-v="reflector"
-          style="border-color:#7a5c9a; background:rgba(122,92,154,0.12); color:#7a5c9a;">
+        <button class="option-btn hidden" id="support-tools-btn" data-q="mode" data-v="support"
+          style="border-color:#b34700; background:rgba(179,71,0,0.1); color:#b34700;">
+          🔧 Support Team Tools
+        </button>
+      </div>
+    </div>
+
+    <!-- Support Team submenu (unlocked via Easter egg) -->
+    <div class="question hidden" id="q-support-tools">
+      <h2>🔧 Support Team Tools</h2>
+      <p style="color:#999; font-size:0.88rem; margin:-8px 0 12px;">For support team use only.</p>
+      <div class="options">
+        <button class="option-btn" data-q="supportTool" data-v="tvs-sync">📺 TVs are out of sync</button>
+        <button class="option-btn" data-q="supportTool" data-v="wireless">📶 Wireless is down</button>
+        <button class="option-btn" data-q="supportTool" data-v="oncall"
+          style="opacity:0.55;" disabled>
+          📅 On-call schedule <em style="font-size:0.82em;">(coming soon)</em>
+        </button>
+        <button class="option-btn" data-q="supportTool" data-v="reflector">
           ✦ Reflector 4K — cast multiple devices to one screen
         </button>
       </div>
@@ -613,6 +630,9 @@
         } else if (v === 'troubleshoot') {
           answers.device = 'troubleshoot';
           showQuestion('q-trouble-type');
+        } else if (v === 'support') {
+          document.getElementById('show-steps-btn').disabled = true;
+          showQuestion('q-support-tools');
         } else if (v === 'reflector') {
           answers.device = 'reflector';
           document.getElementById('show-steps-btn').disabled = false;
@@ -620,6 +640,13 @@
           answers.device = v;
           document.getElementById('show-steps-btn').disabled = false;
         }
+      } else if (q === 'supportTool') {
+        if (v === 'reflector') {
+          answers.device = 'reflector';
+        } else {
+          answers.device = 'support-' + v;
+        }
+        document.getElementById('show-steps-btn').disabled = false;
       } else if (q === 'castingType') {
         ['q-multi-count',...multiDevQs,'q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic']
           .forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -1044,9 +1071,9 @@
     }
   });
 
-  // ── EASTER EGG: unlock Reflector 4K option ────────────────────────────────
-  function unlockReflector() {
-    document.getElementById('reflector-btn').classList.remove('hidden');
+  // ── EASTER EGG: unlock Support Team Tools ────────────────────────────────
+  function unlockSupportTools() {
+    document.getElementById('support-tools-btn').classList.remove('hidden');
   }
 
   // Method 1: triple-tap the page title or logo
@@ -1056,7 +1083,7 @@
     clearTimeout(titleTapTimer);
     if (titleTapCount >= 3) {
       titleTapCount = 0;
-      unlockReflector();
+      unlockSupportTools();
     } else {
       titleTapTimer = setTimeout(() => { titleTapCount = 0; }, 600);
     }
@@ -1067,9 +1094,10 @@
   logoImg.addEventListener('touchend', (e) => { e.preventDefault(); handleEasterEggTap(); });
   logoImg.addEventListener('click', handleEasterEggTap);
 
-  // Method 2: ?reflector URL parameter
-  if (new URLSearchParams(window.location.search).has('reflector')) {
-    unlockReflector();
+  // Method 2: ?support or legacy ?reflector URL parameter
+  const _urlParams = new URLSearchParams(window.location.search);
+  if (_urlParams.has('support') || _urlParams.has('reflector')) {
+    unlockSupportTools();
   }
 
   document.getElementById('restart-btn').addEventListener('click', () => {
@@ -1078,7 +1106,8 @@
     ['q-casting-type','q-multi-count','q-lectern-type','q-multi-combo','q-multi-device2',
      'q-dev1-type','q-dev1-method','q-dev1-cs-method','q-dev1-screens',
      'q-dev2-type','q-dev2-method','q-dev2-cs-method','q-dev2-screens',
-     'q-cs-method','q-trouble-type','q-audio-trouble-type','q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic'].forEach(id =>
+     'q-cs-method','q-trouble-type','q-audio-trouble-type','q-device','q-audio-lectern','q-mic-lectern','q-audio','q-mic',
+     'q-support-tools'].forEach(id =>
       document.getElementById(id).classList.add('hidden'));
     document.querySelectorAll('[data-q="dev2Type"]').forEach(b => { b.disabled = false; });
     resetMultiDevAnswers();
@@ -1131,6 +1160,11 @@
       </div>`;
   }
 
+  window.jumpToStep = function(idx) {
+    currentStep = idx;
+    renderStep();
+  };
+
   window.answerAppInstalled = function(v) {
     answers.appInstalled = v;
     allSteps = buildSteps(answers);
@@ -1142,6 +1176,9 @@
     if (a.device === 'overview') return 'System Overview';
     if (a.device === 'shutdown') return 'Shutting down';
     if (a.device === 'reflector') return 'Reflector 4K — Multi-device';
+    if (a.device === 'support-tvs-sync') return 'Support: TVs out of sync';
+    if (a.device === 'support-wireless') return 'Support: Wireless down';
+    if (a.device === 'support-oncall') return 'Support: On-call schedule';
     if (a.device === 'troubleshoot') {
       const audioSub = a.troubleType === 'audio'
         ? (a.audioTroubleType === 'mic' ? 'Mic not working' : a.audioTroubleType === 'device' ? 'Device audio not working' : 'Audio not working')
@@ -1240,6 +1277,9 @@
   function buildSteps(a) {
     if (a.device === 'troubleshoot') return buildTroubleshootSteps(a);
     if (a.device === 'reflector') return buildReflectorSteps(a);
+    if (a.device === 'support-tvs-sync') return buildTVsSyncSteps(a);
+    if (a.device === 'support-wireless') return buildWirelessSteps(a);
+    if (a.device === 'support-oncall') return buildOnCallSteps(a);
     if (a.castingType === 'multi') return buildMultiSteps(a);
 
     const steps = [];
@@ -2136,6 +2176,145 @@
         If things get out of sync, tap <strong>All TV's → On ${(d1Lectern && a.dev1Type === 'lectern-mac') || (d2Lectern && a.dev2Type === 'lectern-mac') ? 'Mac' : 'PC'}</strong> to reset, then reassign one screen at a time.`
     });
 
+    return steps;
+  }
+
+  // ── SUPPORT: TVs OUT OF SYNC ──────────────────────────────────────────────
+  function buildTVsSyncSteps(a) {
+    const steps = [];
+
+    steps.push({
+      title: 'Step 1 — Try turning the TV off from the console',
+      body: `On the touch panel console, try one of these:<br><br>
+        <strong>Option A — All TVs:</strong> Tap <strong>All TVs → Off</strong>. If all TVs respond, the problem may have resolved itself.<br><br>
+        <strong>Option B — Individual TV:</strong> Tap the specific room or TV that isn't responding, then tap <strong>Off</strong> (or <strong>On</strong> if it's stuck off).<br><br>
+        If the TV responds, you're done! If it still doesn't respond after a few seconds, continue to the next step.`
+    });
+
+    steps.push({
+      title: 'Step 2 — Which TV is out of sync?',
+      body: `The fix depends on which TV is unresponsive. Choose one:
+        <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+          <button onclick="window.jumpToStep(2)" style="flex:1; min-width:160px; padding:16px; border-radius:10px; border:2px solid #4a90d9; background:#eaf2fb; color:#1a3a6b; font-weight:600; font-size:0.95rem; cursor:pointer;">📺 Side TV<br><span style="font-weight:400; font-size:0.85rem;">(Left or Right screen)</span></button>
+          <button onclick="window.jumpToStep(3)" style="flex:1; min-width:160px; padding:16px; border-radius:10px; border:2px solid #4a90d9; background:#eaf2fb; color:#1a3a6b; font-weight:600; font-size:0.95rem; cursor:pointer;">🖥 Main TV<br><span style="font-weight:400; font-size:0.85rem;">(Center/front screen)</span></button>
+        </div>`,
+      noNext: true
+    });
+
+    steps.push({
+      title: 'Step 3 — Side TV: Press the power button underneath the TV',
+      body: `${highlight('images/side tv power button.png', 'Power button location underneath the side TV', [], 65)}
+        The side TVs (Left and Right) have a physical power button on the <strong>underside of the panel</strong>, highlighted above.<br><br>
+        Press it <strong>once</strong> to power the TV off. Wait a few seconds, then press it again to power it back on.<br><br>
+        Once it comes back on, try selecting the correct input from the console.<br><br>
+        <strong>✅ You're done!</strong> Use the <em>← Start Over / Change Answers</em> button if you need to go back.`,
+      noNext: true
+    });
+
+    steps.push({
+      title: 'Step 4 — Main TV: Go to the back room to get the remote',
+      body: `The main TV has no physical power button and must be controlled with its remote.<br><br>
+        The remote is stored in the <strong>back room</strong> to keep it from getting misplaced.<br><br>
+        <strong>To access the back room:</strong><br>
+        <ul style="margin:8px 0 0 18px;">
+          <li>Go through the door in the <strong>Open Use Room</strong>.</li>
+          <li>The door keypad code is: <strong style="font-size:1.2rem; letter-spacing:0.1em;">1987</strong></li>
+        </ul>`
+    });
+
+    steps.push({
+      title: 'Step 5 — Find the remote control in the back room',
+      body: `${highlight('images/remote control location.png', 'Back room shelf showing where the remote control box is stored', [], 65)}
+        ${highlight('images/remote control location closeup.png', 'Closeup of the remote control storage box location', [], 65)}
+        The remote is stored in a box on the shelf, as shown above (highlighted in red).<br><br>
+        Take the box off the shelf.
+        ${highlight('images/remote control box.png', 'Control4 remote control box', [], 65)}
+        Open the box and remove the remote control.`
+    });
+
+    steps.push({
+      title: 'Step 6 — Press the power button on the remote ONCE',
+      body: `${highlight('images/remote control.png', 'TCL remote control with power button highlighted', [], 50)}
+        Point the remote at the <strong>main TV</strong>.<br><br>
+        Press the <strong>power button</strong> (highlighted in red, top of remote) <strong>exactly once</strong>.<br><br>
+        Watch the <strong>lights below the TV</strong> — they will flicker as the TV resets. Wait for it to fully power back on before touching anything else.<br><br>
+        Once the TV is back on, select the correct input from the console, then <strong>return the remote to its box in the back room</strong>.`
+    });
+
+    return steps;
+  }
+
+  // ── SUPPORT: WIRELESS DOWN ────────────────────────────────────────────────
+  function buildWirelessSteps(a) {
+    const steps = [];
+
+    steps.push({
+      title: 'Step 1 — Confirm the symptoms',
+      body: `You are likely dealing with a WAP (wireless access point) issue if you see any of these:<br><br>
+        <ul style="margin:8px 0 0 18px;">
+          <li>The <strong>ClickShare console on the lectern is spinning or showing an error message</strong> and won't connect.</li>
+          <li>When you try to join <strong>AV-GTC-5</strong> or <strong>AV-GTC-2</strong> with a device, it <strong>fails or won't connect</strong>.</li>
+          <li>Similarly, <strong>GTC-Guest-5</strong> and <strong>GTC-Guest-2</strong> may also be down — these all share the same WAP.</li>
+        </ul><br>
+        Continue to Step 2 to confirm it's a WAP issue before rebooting anything.`
+    });
+
+    steps.push({
+      title: 'Step 2 — Quick check: try connecting to the Aztec network',
+      body: `<strong>Aztec</strong> runs on a completely separate WAP from the GTC networks.<br><br>
+        On any device, go to Wi-Fi settings and try to connect to <strong>Aztec</strong>:<br><br>
+        <ul style="margin:8px 0 0 18px;">
+          <li><strong>Aztec connects fine</strong> → the problem is isolated to the GTC/AV WAP, not a building-wide outage. Continue to Step 3.</li>
+          <li><strong>Aztec also fails</strong> → this may be a larger network or internet issue beyond the WAP. Contact your network administrator — rebooting the WAP alone may not help.</li>
+        </ul>`
+    });
+
+    steps.push({
+      title: 'Step 3 — Go to the back room',
+      body: `The WAP is mounted in the equipment rack in the <strong>back room</strong>.<br><br>
+        <ul style="margin:8px 0 0 18px;">
+          <li>Go through the door in the <strong>Open Use Room</strong>.</li>
+          <li>Door keypad code: <strong style="font-size:1.2rem; letter-spacing:0.1em;">1987</strong></li>
+          <li>You may need the <strong>ladder</strong> — the WAP is on an upper shelf of the rack.</li>
+        </ul>`
+    });
+
+    steps.push({
+      title: 'Step 4 — Find the WAP on the equipment rack',
+      body: `${highlight('images/rack.png', 'Equipment rack in the back room with WAP location highlighted', [], 70)}
+        The WAP is on the rack shown above (highlighted in red). It sits on a shelf near the top.<br><br>
+        ${highlight('images/guest and atv access point.png', 'Closeup of the AV GTC wireless access point', [], 65)}
+        This is what it looks like up close — a white dome labeled <strong>AV GTC</strong>. It is <strong>magnetized to the shelf</strong>, so you can lift it straight up.`
+    });
+
+    steps.push({
+      title: 'Step 5 — Unplug the WAP, then plug it back in',
+      body: `Locate the power cable going into the WAP and <strong>unplug it</strong>.<br><br>
+        Wait about <strong>10 seconds</strong>, then plug it back in.<br><br>
+        ⏱ <strong>Now wait a full 5 minutes</strong> before testing anything. The WAP needs time to fully restart and re-establish all network connections. Testing too early may make it seem like it's still down when it just needs more time.`
+    });
+
+    steps.push({
+      title: 'Step 6 — Test the connection',
+      body: `After 5 minutes, test the following:<br><br>
+        <ul style="margin:8px 0 0 18px;">
+          <li>Try connecting a device to <strong>AV-GTC-5</strong> — if it connects, the WAP is back up.</li>
+          <li>Check the <strong>ClickShare console on the lectern</strong> — the spinning/error should be gone.</li>
+          <li>Try <strong>GTC-Guest-5</strong> as well to confirm the guest networks are also back.</li>
+        </ul><br>
+        If the networks still don't come back after another few minutes, the WAP may need further attention — contact your network administrator.`
+    });
+
+    return steps;
+  }
+
+  // ── SUPPORT: ON-CALL SCHEDULE (PLACEHOLDER) ───────────────────────────────
+  function buildOnCallSteps(a) {
+    const steps = [];
+    steps.push({
+      title: '📅 On-call schedule',
+      body: `<em style="color:#999;">On-call schedule information will be added here.</em>`
+    });
     return steps;
   }
 
