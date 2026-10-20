@@ -2470,11 +2470,11 @@
           <td style="padding:6px 8px; font-size:0.82rem; white-space:nowrap; border-bottom:1px solid #e0e0e0;">${r.dt}</td>
           <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0;">${r.classLab}</td>
           <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0;">
-            <strong>${r.primary}</strong><br>
-            <a href="sms:${r.primaryCell.replace(/\D/g,'')}" style="color:#1565c0; font-size:0.78rem;">${r.primaryCell}</a>
+            <strong style="color:#fff;">${r.primary}</strong><br>
+            <a href="sms:${r.primaryCell.replace(/\D/g,'')}" style="color:#fff; font-weight:700; font-size:0.78rem;">${r.primaryCell}</a>
           </td>
-          <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0; color:#555;">
-            ${r.backup ? `${r.backup}<br><a href="sms:${r.backupCell.replace(/\D/g,'')}" style="color:#1565c0; font-size:0.78rem;">${r.backupCell}</a>` : '<span style="color:#bbb;">—</span>'}
+          <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0;">
+            ${r.backup ? `<strong style="color:#fff;">${r.backup}</strong><br><a href="sms:${r.backupCell.replace(/\D/g,'')}" style="color:#fff; font-weight:700; font-size:0.78rem;">${r.backupCell}</a>` : '<span style="color:#bbb;">—</span>'}
           </td>
         </tr>`;
       }).join('');
