@@ -2423,92 +2423,78 @@
   // ── SUPPORT: ON-CALL SCHEDULE (PLACEHOLDER) ───────────────────────────────
   function buildOnCallSteps(a) {
     const steps = [];
+    const rows = parseStaticSchedule();
+    const now  = Date.now();
+    const next = rows.find(r => r.ts + 2*3600*1000 > now) || rows[rows.length - 1] || null;
 
-    // Step 1: Next / current class contact card
-    steps.push({
-      title: '📅 On-call support',
-      body: `<div id="oncall-next-card" style="color:#999; font-style:italic;">Loading schedule…</div>`
-    });
+    // ── Step 1: next class card ────────────────────────────────────────────
+    let card1HTML;
+    if (!rows.length || !next) {
+      card1HTML = `<p style="color:#999;">Schedule not loaded yet. Text <strong>Carol</strong> (630-423-2255) or <strong>Ann</strong> (623-606-6041) — text only, no calls.</p>`;
+    } else {
+      const n = next;
+      const isNow = now >= n.ts && now < n.ts + 2*3600*1000;
+      card1HTML = `
+        <div style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:16px 18px; margin:8px 0;">
+          <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#2e7d32; margin-bottom:4px;">
+            ${isNow ? '🟢 Currently on-call' : '⏭ Next class'}
+          </div>
+          <div style="font-size:0.95rem; font-weight:600; margin-bottom:10px; color:#1a1a1a;">${n.classLab}<br>
+            <span style="font-weight:400; font-size:0.85rem; color:#555;">${n.dt}</span>
+          </div>
+          <div style="margin-bottom:8px;">
+            <span style="font-size:0.75rem; color:#555; font-weight:600; display:block; margin-bottom:2px;">PRIMARY</span>
+            <strong style="font-size:1rem; color:#1a1a1a;">${n.primary}</strong>
+            <a href="sms:${n.primaryCell.replace(/\D/g,'')}" style="display:block; font-size:0.95rem; color:#1565c0; margin-top:2px;">📱 ${n.primaryCell}</a>
+          </div>
+          ${n.backup ? `<div>
+            <span style="font-size:0.75rem; color:#555; font-weight:600; display:block; margin-bottom:2px;">BACKUP</span>
+            <strong style="font-size:0.95rem; color:#1a1a1a;">${n.backup}</strong>
+            <a href="sms:${n.backupCell.replace(/\D/g,'')}" style="display:block; font-size:0.9rem; color:#1565c0; margin-top:2px;">📱 ${n.backupCell}</a>
+          </div>` : ''}
+          <div style="margin-top:10px; font-size:0.8rem; color:#555;">Text only — no calls please.</div>
+        </div>`;
+    }
+    steps.push({ title: '📅 On-call support', body: card1HTML });
 
-    // Step 2: Full upcoming schedule table
-    steps.push({
-      title: '📋 Full schedule',
-      body: `<div id="oncall-table-card" style="color:#999; font-style:italic;">Loading schedule…</div>`
-    });
-
-    fetchOnCallInfo().then(info => {
-      // ── Card 1: next class ──────────────────────────────────────────────
-      const card1 = document.getElementById('oncall-next-card');
-      if (card1) {
-        if (!info.loaded || !info.next) {
-          card1.innerHTML = `<p style="color:#999;">Schedule not loaded yet. Text <strong>Carol</strong> (630-423-2255) or <strong>Ann</strong> (623-606-6041) — text only, no calls.</p>`;
-        } else {
-          const n = info.next;
-          const isNow = Date.now() >= n.ts && Date.now() < n.ts + 2*3600*1000;
-          card1.outerHTML = `
-            <div style="background:#e8f4e8; border:2px solid #4caf50; border-radius:10px; padding:16px 18px; margin:8px 0;">
-              <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#2e7d32; margin-bottom:4px;">
-                ${isNow ? '🟢 Currently on-call' : '⏭ Next class'}
-              </div>
-              <div style="font-size:0.95rem; font-weight:600; margin-bottom:10px; color:#1a1a1a;">${n.classLab}<br>
-                <span style="font-weight:400; font-size:0.85rem; color:#555;">${n.dt}</span>
-              </div>
-              <div style="margin-bottom:8px;">
-                <span style="font-size:0.75rem; color:#555; font-weight:600; display:block; margin-bottom:2px;">PRIMARY</span>
-                <strong style="font-size:1rem; color:#1a1a1a;">${n.primary}</strong>
-                <a href="sms:${n.primaryCell.replace(/\D/g,'')}" style="display:block; font-size:0.95rem; color:#1565c0; margin-top:2px;">📱 ${n.primaryCell}</a>
-              </div>
-              ${n.backup ? `<div>
-                <span style="font-size:0.75rem; color:#555; font-weight:600; display:block; margin-bottom:2px;">BACKUP</span>
-                <strong style="font-size:0.95rem; color:#1a1a1a;">${n.backup}</strong>
-                <a href="sms:${n.backupCell.replace(/\D/g,'')}" style="display:block; font-size:0.9rem; color:#1565c0; margin-top:2px;">📱 ${n.backupCell}</a>
-              </div>` : ''}
-              <div style="margin-top:10px; font-size:0.8rem; color:#555;">Text only — no calls please.</div>
-            </div>`;
-        }
-      }
-
-      // ── Card 2: full table ──────────────────────────────────────────────
-      const card2 = document.getElementById('oncall-table-card');
-      if (card2) {
-        if (!info.loaded || !info.rows.length) {
-          card2.innerHTML = `<p style="color:#999;">Schedule not available.</p>`;
-        } else {
-          const now = Date.now();
-          const rowsHTML = info.rows.map(r => {
-            const past = r.ts + 2*3600*1000 < now;
-            const active = !past && r.ts <= now + 3600*1000 && r.ts + 2*3600*1000 > now;
-            const style = past ? 'opacity:0.45;' : active ? 'background:#e8f4e8;' : '';
-            return `<tr style="${style}">
-              <td style="padding:6px 8px; font-size:0.82rem; white-space:nowrap; border-bottom:1px solid #e0e0e0;">${r.dt}</td>
-              <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0;">${r.classLab}</td>
-              <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0;">
-                <strong>${r.primary}</strong><br>
-                <a href="sms:${r.primaryCell.replace(/\D/g,'')}" style="color:#1565c0; font-size:0.78rem;">${r.primaryCell}</a>
-              </td>
-              <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0; color:#555;">
-                ${r.backup ? `${r.backup}<br><a href="sms:${r.backupCell.replace(/\D/g,'')}" style="color:#1565c0; font-size:0.78rem;">${r.backupCell}</a>` : '<span style="color:#bbb;">—</span>'}
-              </td>
-            </tr>`;
-          }).join('');
-          card2.outerHTML = `
-            <div style="overflow-x:auto; margin:4px 0;">
-              <table style="width:100%; border-collapse:collapse; font-family:inherit;">
-                <thead>
-                  <tr style="background:#2e7d32; color:#fff;">
-                    <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Date/Time</th>
-                    <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Class</th>
-                    <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Support Person</th>
-                    <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Backup</th>
-                  </tr>
-                </thead>
-                <tbody>${rowsHTML}</tbody>
-              </table>
-              <p style="font-size:0.78rem; color:#888; margin-top:8px;">Text only — no calls please. Past classes shown faded.</p>
-            </div>`;
-        }
-      }
-    });
+    // ── Step 2: full schedule table ────────────────────────────────────────
+    let card2HTML;
+    if (!rows.length) {
+      card2HTML = `<p style="color:#999;">Schedule not available.</p>`;
+    } else {
+      const rowsHTML = rows.map(r => {
+        const past   = r.ts + 2*3600*1000 < now;
+        const active = !past && r.ts <= now + 3600*1000 && r.ts + 2*3600*1000 > now;
+        const style  = past ? 'opacity:0.45;' : active ? 'background:#e8f4e8;' : '';
+        return `<tr style="${style}">
+          <td style="padding:6px 8px; font-size:0.82rem; white-space:nowrap; border-bottom:1px solid #e0e0e0;">${r.dt}</td>
+          <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0;">${r.classLab}</td>
+          <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0;">
+            <strong>${r.primary}</strong><br>
+            <a href="sms:${r.primaryCell.replace(/\D/g,'')}" style="color:#1565c0; font-size:0.78rem;">${r.primaryCell}</a>
+          </td>
+          <td style="padding:6px 8px; font-size:0.82rem; border-bottom:1px solid #e0e0e0; color:#555;">
+            ${r.backup ? `${r.backup}<br><a href="sms:${r.backupCell.replace(/\D/g,'')}" style="color:#1565c0; font-size:0.78rem;">${r.backupCell}</a>` : '<span style="color:#bbb;">—</span>'}
+          </td>
+        </tr>`;
+      }).join('');
+      card2HTML = `
+        <div style="overflow-x:auto; margin:4px 0;">
+          <table style="width:100%; border-collapse:collapse; font-family:inherit;">
+            <thead>
+              <tr style="background:#2e7d32; color:#fff;">
+                <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Date/Time</th>
+                <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Class</th>
+                <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Support Person</th>
+                <th style="padding:7px 8px; text-align:left; font-size:0.78rem; font-weight:600;">Backup</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHTML}</tbody>
+          </table>
+          <p style="font-size:0.78rem; color:#888; margin-top:8px;">Text only — no calls please. Past classes shown faded.</p>
+        </div>`;
+    }
+    steps.push({ title: '📋 Full schedule', body: card2HTML });
 
     return steps;
   }
