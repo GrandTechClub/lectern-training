@@ -1106,17 +1106,16 @@
   let onCallCache = null;
 
   function parseOnCallCSV(text) {
-    // CSV columns: Date/Time | Class/Lab | Support Person | Cell | (blank) | Backup Person | Cell
+    // CSV columns: Date | Time | Class Title | Instructor | Support Person | Support Cell | Backup Person | Backup Cell
     const lines = text.trim().split('\n');
     const rows = [];
     for (let i = 1; i < lines.length; i++) {
-      // Split respecting quoted fields
-      const cols = lines[i].match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$|^(?=,))/g) || [];
+      const cols = lines[i].match(/(".*?"|[^,\r\n]+|(?<=,)(?=,)|(?<=,)[\r\n]|^(?=,))/g) || [];
       const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
-      const [dt, classLab, primary, primaryCell, , backup, backupCell] = clean;
-      if (!dt || !primary) continue;
-      // Parse date/time string like "10/10/26 10:00 AM"
-      const m = dt.match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)\s*(AM|PM)/i);
+      const [date, time, classLab, , primary, primaryCell, backup, backupCell] = clean;
+      if (!date || !time || !primary) continue;
+      const dtStr = `${date.trim()} ${time.trim()}`;
+      const m = dtStr.match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)\s*(AM|PM)/i);
       if (!m) continue;
       let [, mo, day, yr, hr, min, ampm] = m;
       let h = parseInt(hr); const mn = parseInt(min);
