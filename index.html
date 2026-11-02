@@ -1114,6 +1114,7 @@
       const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
       const [date, time, classLab, , primary, primaryCell, backup, backupCell] = clean;
       if (!date || !time || !primary) continue;
+      if (classLab && /cancel/i.test(classLab)) continue;
       const dtStr = `${date.trim()} ${time.trim()}`;
       const m = dtStr.match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+)\s*(AM|PM)/i);
       if (!m) continue;
