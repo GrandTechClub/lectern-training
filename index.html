@@ -826,7 +826,11 @@
   });
 
   // ── START STEPS ───────────────────────────────────────────────────────────
-  document.getElementById('show-steps-btn').addEventListener('click', () => {
+  document.getElementById('show-steps-btn').addEventListener('click', async () => {
+    // For on-call path, wait for live sheet data before building steps
+    if (answers.device === 'support-oncall' && ONCALL_SHEET_URL) {
+      await fetchOnCallInfo();
+    }
     allSteps = buildSteps(answers);
     currentStep = 0;
     document.getElementById('step-scenario').textContent = 'Scenario: ' + describeScenario(answers);
@@ -1149,7 +1153,6 @@
   }
 
   async function fetchOnCallInfo() {
-    if (onCallCache) return onCallCache;
     onCallCache = { rows: [], next: null, loaded: false };
     // Use static schedule if no sheet URL is configured
     if (!ONCALL_SHEET_URL) {
@@ -2423,10 +2426,12 @@
     return steps;
   }
 
-  // ── SUPPORT: ON-CALL SCHEDULE (PLACEHOLDER) ───────────────────────────────
+  // ── SUPPORT: ON-CALL SCHEDULE ─────────────────────────────────────────────
   function buildOnCallSteps(a) {
     const steps = [];
-    const rows = parseStaticSchedule();
+    // Use cached sheet data if available, otherwise fall back to static
+    const cached = onCallCache && onCallCache.loaded ? onCallCache : null;
+    const rows = cached ? cached.rows : parseStaticSchedule();
     const now  = Date.now();
     const next = rows.find(r => r.ts + 2*3600*1000 > now) || rows[rows.length - 1] || null;
 
