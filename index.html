@@ -1160,7 +1160,8 @@
       return onCallCache;
     }
     try {
-      const res = await fetch(ONCALL_SHEET_URL);
+      const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(ONCALL_SHEET_URL);
+      const res = await fetch(proxyUrl);
       if (!res.ok) return onCallCache;
       const rows = parseOnCallCSV(await res.text());
       const now = Date.now();
