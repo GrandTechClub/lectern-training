@@ -827,10 +827,6 @@
 
   // ── START STEPS ───────────────────────────────────────────────────────────
   document.getElementById('show-steps-btn').addEventListener('click', async () => {
-    // For on-call path, wait for live sheet data before building steps
-    if (answers.device === 'support-oncall' && ONCALL_SHEET_URL) {
-      await fetchOnCallInfo();
-    }
     allSteps = buildSteps(answers);
     currentStep = 0;
     document.getElementById('step-scenario').textContent = 'Scenario: ' + describeScenario(answers);
@@ -1106,7 +1102,7 @@
 
   // Optional: fetch from published Google Sheet CSV (overrides static data when set)
   // File → Share → Publish to web → Sheet "Schedule" → CSV → Publish. Paste URL below.
-  const ONCALL_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJx54rBeNqbQh0fNXQKwvtCh5spY3L5reEllMWxbVAUe0x0LarlAVAgnnBMQrS7R0wsea4TBXuzjmB/pub?gid=0&single=true&output=csv';
+  const ONCALL_SHEET_URL = '';  // disabled until Apps Script proxy is set up
 
   // onCallCache: { rows: [{dt, classLab, primary, primaryCell, backup, backupCell, ts}], next: {...}, loaded }
   let onCallCache = null;
