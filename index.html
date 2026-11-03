@@ -1162,7 +1162,7 @@
     }
     try {
       const bustUrl = ONCALL_SHEET_URL + '&_t=' + Date.now();
-      const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(bustUrl);
+      const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(bustUrl);
       const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) return onCallCache;
       const rows = parseOnCallCSV(await res.text());
